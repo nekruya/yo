@@ -1,71 +1,73 @@
-# Student's Assistant
+# Student’s Assistant
 
-## Overview
-The Student's Assistant is a web application designed to provide an intuitive and user-friendly experience for students, teachers, and administrators. The application focuses on simplifying navigation and enhancing accessibility, ensuring that all users can efficiently interact with the platform.
+## обзор
+«Помощник учащегося» — это веб‑приложение на React с управлением учебным процессом и разделением прав по ролям:
+- регистрация и вход (хранение JWT‑токена в localStorage);
+- администратор: управление пользователями (создание, редактирование, удаление), настройка ролей и отчёты;
+- преподаватель: создание и редактирование курсов, планирование расписания, загрузка материалов, общение со студентами;
+- студент: просмотр курсов и расписания, доступ к материалам, участие в обсуждениях, получение уведомлений;
+- расписание: навигация по дням недели, интерактивные карточки занятий, модальные формы добавления/редактирования;
+- календарь: drag-and-drop событий, модальные формы добавления/редактирования/удаления, поддержка повторов;
+- уведомления: cogo-toast для информирования пользователя;
+- единый бело‑зеленый фирменный стиль и адаптивный дизайн.
 
-## Features
-- **User-Centric Design**: The interface is designed with the end-user in mind, minimizing clicks and reducing complexity.
-- **Responsive Layout**: The application is fully responsive, providing a seamless experience across desktops, tablets, and smartphones.
-- **Accessibility Compliance**: Adheres to WCAG guidelines to ensure accessibility for users with disabilities.
-- **Interactive Elements**: Includes modals, progress bars, and hover effects to enhance user engagement.
-
-## Project Structure
+## структура проекта
 ```
-students-assistant
-├── public
-│   ├── index.html
-│   └── manifest.json
-├── src
-│   ├── assets
-│   │   └── images
-│   ├── components
-│   │   ├── Header.js
-│   │   ├── Footer.js
-│   │   ├── Sidebar.js
-│   │   └── common
-│   │       ├── Button.js
-│   │       ├── InputField.js
-│   │       └── Modal.js
-│   ├── pages
-│   │   ├── Dashboard.js
-│   │   ├── Courses.js
-│   │   ├── Notifications.js
-│   │   └── Profile.js
-│   ├── styles
-│   │   ├── colors.css
-│   │   ├── typography.css
-│   │   └── layout.css
-│   ├── App.js
-│   ├── index.js
-│   └── routes.js
-├── package.json
-├── .gitignore
-└── README.md
-```
+front/
+├── public/                 # статические файлы (index.html, favicon и др.)
+├── src/                    # исходный код React
+│   ├── components/         # общие компоненты (Header, Sidebar, ProtectedRoute и др.)
+│   ├── pages/              # страницы (Dashboard, Calendar, Schedule, Login, Register и др.)
+│   ├── services/           # работа с localStorage (auth, schedule)
+│   ├── styles/             # глобальные стили и css-переменные
+│   ├── App.js              # главный компонент
+│   └── index.js            # входная точка
+├── package.json            # зависимости и скрипты
+└── .gitignore              # исключения Git
+``` 
 
-## Installation
-1. Clone the repository:
-   ```
-   git clone https://github.com/yourusername/students-assistant.git
-   ```
-2. Navigate to the project directory:
-   ```
-   cd students-assistant
-   ```
-3. Install dependencies:
-   ```
-   npm install
-   ```
-
-## Usage
-To start the application, run:
-```
+## установка и запуск
+```bash
+cd front
+npm install
 npm start
 ```
-This will launch the application in your default web browser.
+приложение будет доступно по адресу http://localhost:3000
 
-## Contributing
-Contributions are welcome! Please open an issue or submit a pull request for any enhancements or bug fixes.
+---
 
-## License
-This project is licensed under the MIT License. See the LICENSE file for details.
+# Student’s Assistant
+
+## overview
+Student’s Assistant is a React web application with role-based access control and features for managing the educational workflow:
+- registration and login (JWT token in localStorage);
+- admin: user management (create, update, delete), roles and reporting;
+- teacher: course creation/editing, schedule planning, content uploads, student interaction;
+- student: course and schedule viewing, access to materials, discussions, notifications;
+- schedule: day‑by‑day navigation, interactive class cards, add/edit via modals;
+- calendar: drag‑and‑drop events, add/edit/delete modals, recurring events support;
+- notifications using cogo‑toast;
+- consistent white‑and‑green branding and responsive layout.
+
+## project structure
+```
+front/
+├── public/
+├── src/
+│   ├── components/
+│   ├── pages/
+│   ├── services/
+│   ├── styles/
+│   ├── App.js
+│   └── index.js
+├── package.json
+└── .gitignore
+```
+
+## installation & usage
+```bash
+cd front
+npm install
+npm start
+```
+app will run at http://localhost:3000
