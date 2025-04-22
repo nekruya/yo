@@ -1,11 +1,13 @@
-// src/pages/Calendar.js
+// файл src/pages/calendar.js
 import React, { useState } from 'react';
 import { Calendar as BigCalendar, dateFnsLocalizer } from 'react-big-calendar';
+import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop';
 import format from 'date-fns/format';
 import parse from 'date-fns/parse';
 import startOfWeek from 'date-fns/startOfWeek';
 import getDay from 'date-fns/getDay';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
+import 'react-big-calendar/lib/addons/dragAndDrop/styles.css';
 import './Calendar.css';
 import cogoToast from 'cogo-toast';
 
@@ -44,6 +46,9 @@ const Calendar = () => {
     recurrence: { type: 'none', daysOfWeek: [], until: new Date() },
   });
 
+  // поддержка перетаскивания и изменения размера событий
+  const DnDCalendar = withDragAndDrop(BigCalendar);
+
   const handleSelectSlot = (slotInfo) => {
     setNewEvent({
       ...newEvent,
@@ -71,15 +76,27 @@ const Calendar = () => {
     });
   };
 
+  // обработка перемещения события
+  const handleEventDrop = ({ event, start, end }) => {
+    setMyEvents(old => old.map(e => e === event ? { ...e, start, end } : e));
+    cogoToast.info('Событие перемещено');
+  };
+
+  // обработка изменения размера события
+  const handleEventResize = ({ event, start, end }) => {
+    setMyEvents(old => old.map(e => e === event ? { ...e, start, end } : e));
+    cogoToast.info('Событие изменено');
+  };
+
   const handleSaveEvent = () => {
     if (selectedEvent) {
-      // Update existing event
+      // обновление существующего события
       setMyEvents(myEvents.map(event => 
         event === selectedEvent ? { ...selectedEvent, ...newEvent } : event
       ));
       cogoToast.success('Событие обновлено');
     } else {
-      // Add new or recurring events
+      // добавление нового или повторяющегося события
       if (newEvent.recurrence.type === 'none') {
         setMyEvents([...myEvents, newEvent]);
         cogoToast.success('Событие добавлено');
@@ -92,14 +109,14 @@ const Calendar = () => {
     handleCloseModal();
   };
 
-  // Delete existing event
+  // удаление существующего события
   const handleDeleteEvent = () => {
     setMyEvents(myEvents.filter(event => event !== selectedEvent));
     cogoToast.warn('Событие удалено');
     handleCloseModal();
   };
 
-  // Generate recurring events between start and until
+  // генерация повторяющихся событий между датой начала и датой окончания
   const generateRecurringEvents = (event) => {
     const { title, description, allDay, recurrence, start, end } = event;
     const occurrences = [];
@@ -129,7 +146,7 @@ const Calendar = () => {
     <div className="calendar-page">
       <h1>Календарь</h1>
       <div className="calendar-container">
-        <BigCalendar
+        <DnDCalendar
           localizer={localizer}
           events={myEvents}
           startAccessor="start"
@@ -138,6 +155,9 @@ const Calendar = () => {
           selectable
           onSelectSlot={handleSelectSlot}
           onSelectEvent={handleSelectEvent}
+          onEventDrop={handleEventDrop}
+          onEventResize={handleEventResize}
+          resizable
           messages={{
             next: 'Следующий',
             previous: 'Предыдущий',

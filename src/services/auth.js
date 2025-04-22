@@ -1,17 +1,17 @@
 // src/services/auth.js
 
-// Retrieve stored users or initialize empty array
+// получить сохраненных пользователей или инициализировать пустой массив
 export const getUsers = () => {
   const users = localStorage.getItem('users');
   return users ? JSON.parse(users) : [];
 };
 
-// Save users array to localStorage
+// сохранить массив пользователей в localStorage
 export const saveUsers = (users) => {
   localStorage.setItem('users', JSON.stringify(users));
 };
 
-// Register a new user and store in localStorage
+// зарегистрировать нового пользователя и сохранить в localStorage
 export const register = (name, email, password, role) => {
   const users = getUsers();
   if (users.some(u => u.email === email)) {
@@ -23,32 +23,32 @@ export const register = (name, email, password, role) => {
   return newUser;
 };
 
-// Login: check credentials and issue a simple token
+// войти: проверить учетные данные и выдать простой токен
 export const login = (email, password) => {
   const users = getUsers();
   const user = users.find(u => u.email === email && u.password === password);
   if (!user) {
     throw new Error('Неверный email или пароль');
   }
-  // generate simple token (timestamp-based)
+  // сгенерировать простой токен (на основе timestamp)
   const token = Date.now().toString();
   localStorage.setItem('token', token);
   localStorage.setItem('currentUser', JSON.stringify(user));
   return user;
 };
 
-// Logout: clear token and current user
+// выйти: удалить токен и данные текущего пользователя
 export const logout = () => {
   localStorage.removeItem('token');
   localStorage.removeItem('currentUser');
 };
 
-// Get current stored token
+// получить текущий токен из localStorage
 export const getToken = () => {
   return localStorage.getItem('token');
 };
 
-// Get current logged in user
+// получить залогиненного пользователя из localStorage
 export const getCurrentUser = () => {
   const user = localStorage.getItem('currentUser');
   return user ? JSON.parse(user) : null;
