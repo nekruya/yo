@@ -1,0 +1,15 @@
+.schedule-page {
+  padding: 2rem;
+  background-color: var(--background-color);
+}
+
+.schedule-page h1 {
+  font-family: 'Montserrat', sans-serif;
+  color: var(--primary-color);
+  margin-top: 2rem; 
+}
+
+.schedule-page p {
+  font-family: 'Roboto', sans-serif;
+  color: var(--text-color);
+}

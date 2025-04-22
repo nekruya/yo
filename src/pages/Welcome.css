@@ -1,0 +1,19 @@
+.welcome-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: var(--background-color);
+  text-align: center;
+}
+
+.welcome-container h1 {
+  font-family: 'Montserrat', sans-serif;
+  color: var(--primary-color);
+}
+
+.welcome-container p {
+  font-family: 'Roboto', sans-serif;
+  color: var(--text-color);
+}

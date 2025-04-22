@@ -1,0 +1,39 @@
+.calendar-page {
+  padding: 2rem;
+  background-color: var(--background-color);
+}
+
+.calendar-page h1 {
+  font-family: 'Montserrat', sans-serif;
+  color: var(--primary-color);
+  margin-bottom: 2rem;
+}
+
+.calendar-container {
+  background-color: white;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.rbc-calendar {
+  min-height: 600px;
+}
+
+.rbc-toolbar button {
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+}
+
+.rbc-toolbar button:hover {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.rbc-today {
+  background-color: rgba(106, 179, 153, 0.1);
+}
+
+.rbc-event {
+  background-color: var(--primary-color);
+} 

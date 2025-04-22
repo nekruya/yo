@@ -1,0 +1,54 @@
+.courses-page {
+  padding: 2rem;
+  background-color: var(--background-color);
+}
+
+.courses-page h1 {
+  font-family: 'Montserrat', sans-serif;
+  color: var(--primary-color);
+  margin-top: 2rem; 
+}
+
+.course-controls {
+  margin-bottom: 1rem;
+}
+
+.course-controls .btn {
+  margin-right: 0.5rem;
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: #6ab399; 
+  border-color: #6ab399; 
+}
+
+.btn-primary:hover {
+  color: #fff;
+  background-color: #5a9a85; 
+  border-color: #5a9a85; 
+}
+
+.btn-secondary {
+  color: #fff;
+  background-color: #1976D2; 
+  border-color: #1976D2; 
+}
+
+.btn-secondary:hover {
+  color: #fff;
+  background-color: #155a8a; 
+  border-color: #155a8a; 
+}
+
+.btn-danger {
+  color: #fff;
+  background-color: #F44336; 
+  border-color: #F44336; 
+}
+
+.btn-danger:hover {
+  color: #fff;
+  background-color: #d32f2f; 
+  border-color: #d32f2f; 
+}

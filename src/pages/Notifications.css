@@ -1,0 +1,9 @@
+.notifications-page {
+    padding: 2rem;
+    background-color: var(--background-color);
+  }
+  
+  .notifications-page h1 {
+    font-family: 'Montserrat', sans-serif;
+    color: var(--primary-color);
+  }

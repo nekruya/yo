@@ -1,0 +1,15 @@
+.student-courses-page {
+  padding: 2rem;
+  background-color: var(--background-color);
+}
+
+.student-courses-page h1 {
+  font-family: 'Montserrat', sans-serif;
+  color: var(--primary-color);
+  margin-top: 2rem; 
+}
+
+.student-courses-page p {
+  font-family: 'Roboto', sans-serif;
+  color: var(--text-color);
+}

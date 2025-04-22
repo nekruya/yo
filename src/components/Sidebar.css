@@ -1,0 +1,49 @@
+/* Стили для боковой панели */
+.sidebar {
+  background-color: #343a40; 
+  padding: 1rem; 
+  height: 100vh; 
+}
+
+/* Стили для списка навигации */
+.sidebar ul {
+  list-style: none; 
+  padding: 0; 
+}
+
+/* для элементов списка */
+.sidebar li {
+  margin-bottom: 1rem; 
+}
+
+/* для ссылок */
+.sidebar a {
+  color: #ffffff; 
+  text-decoration: none; 
+  display: flex; 
+  align-items: center; 
+}
+
+/* для ссылок при наведении */
+.sidebar a:hover {
+  color: #f2f8f6; /* Цвет текста при наведении */
+}
+
+/* Стили для иконок */
+.icon {
+  width: 2em; /* Ширина иконки */
+  height: 2em; /* Высота иконки */
+  margin-right: 1rem; /* Отступ справа */
+}
+
+.nav-link {
+  color: #ffffff;
+}
+
+.nav-link.active {
+  background-color: #6ab399;
+}
+
+.nav-link:hover {
+  background-color: #5a9a85;
+}

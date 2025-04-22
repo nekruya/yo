@@ -1,0 +1,9 @@
+.dashboard-page {
+    padding: 2rem;
+    background-color: var(--background-color);
+  }
+  
+  .dashboard-page h1 {
+    font-family: 'Montserrat', sans-serif;
+    color: var(--primary-color);
+  }

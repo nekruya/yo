@@ -1,0 +1,38 @@
+.header {
+  background-color: #6ab399; 
+  color: white;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.5rem;
+  color: white;
+  text-decoration: none;
+}
+
+.nav {
+  display: flex;
+  justify-content: flex-start; 
+  align-items: center;
+  flex: 1; 
+  margin-left: 3.5rem; 
+}
+
+.nav a {
+  color: white;
+  margin-left: 0.5rem; 
+  text-decoration: none;
+  padding: 0.5rem; 
+}
+
+.nav a:first-child {
+  margin-left: 0; 
+}
+
+.nav a:hover {
+  color: #FF9800;
+}

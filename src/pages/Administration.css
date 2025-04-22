@@ -1,0 +1,47 @@
+.administration-page {
+  padding: 2rem;
+  background-color: var(--background-color);
+}
+
+.administration-page h1 {
+  font-family: 'Montserrat', sans-serif;
+  color: var(--primary-color);
+  margin-top: 2rem; /* отступ сверху для заголовка */
+}
+
+.administration-page p {
+  font-family: 'Roboto', sans-serif;
+  color: var(--text-color);
+}
+
+.admin-buttons {
+  margin-top: 2rem;
+}
+
+.admin-buttons .btn {
+  margin-right: 1rem;
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: #6ab399; 
+  border-color: #6ab399; 
+}
+
+.btn-primary:hover {
+  color: #fff;
+  background-color: #5a9a85; /* Темнее при наведении */
+  border-color: #5a9a85; 
+}
+
+.btn-secondary {
+  color: #fff;
+  background-color: #1976D2; 
+  border-color: #1976D2; 
+}
+
+.btn-secondary:hover {
+  color: #fff;
+  background-color: #155a8a; 
+  border-color: #155a8a; 
+}

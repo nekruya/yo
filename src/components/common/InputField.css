@@ -1,0 +1,20 @@
+.input-field {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+  }
+  
+  .input-field label {
+    margin-bottom: 0.5rem;
+    color: #333333;
+  }
+  
+  .input-field input {
+    padding: 0.5rem;
+    border: 1px solid #BDBDBD;
+    border-radius: 5px;
+  }
+  
+  .input-field input:focus {
+    border-color: #1976D2;
+  }

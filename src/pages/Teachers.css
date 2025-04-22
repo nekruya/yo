@@ -1,0 +1,65 @@
+.teachers-page {
+  padding: 2rem;
+  background-color: var(--background-color);
+}
+
+.teachers-page h1 {
+  font-family: 'Montserrat', sans-serif;
+  color: var(--primary-color);
+  margin-top: 2rem;
+}
+
+.teachers-page p {
+  font-family: 'Roboto', sans-serif;
+  color: var(--text-color);
+}
+
+.teacher-buttons {
+  margin-top: 2rem;
+  display: flex;
+  gap: 1rem;
+}
+
+.teacher-buttons .btn {
+  margin-right: 1rem;
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: #6ab399;
+  border-color: #6ab399;
+}
+
+.btn-primary:hover {
+  color: #fff;
+  background-color: #5a9a85;
+  border-color: #5a9a85;
+}
+
+.btn-secondary {
+  color: #fff;
+  background-color: #1976D2;
+  border-color: #1976D2;
+}
+
+.btn-secondary:hover {
+  color: #fff;
+  background-color: #155a8a;
+  border-color: #155a8a;
+}
+
+.additional-links .btn-outline-lightblue {
+  color: #fff;
+  border: 2px solid #1976D2;
+  background-color: #1976D2;
+  padding: 0.5rem 1rem;
+  text-decoration: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.additional-links .btn-outline-lightblue:hover {
+  background-color: #155a8a;
+  border-color: #155a8a;
+  color: #fff;
+}
