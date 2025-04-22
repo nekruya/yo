@@ -1,49 +1,81 @@
-/* Стили для боковой панели */
+/* Ensure toggle is visible despite global overflow */
 .sidebar {
-  background-color: #343a40; 
-  padding: 1rem; 
-  height: 100vh; 
+  overflow: visible;
 }
 
-/* Стили для списка навигации */
+/* Sidebar base */
+.sidebar {
+  background-color: #343a40;
+  padding: 1rem;
+  height: 100vh;
+  width: 200px;
+  transition: width 0.3s ease;
+  position: relative;
+}
+
+/* Toggle button - make it prominent */
+.sidebar-toggle {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 100;
+  width: 30px;
+  height: 30px;
+  background-color: #5a9a85;
+  color: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+/* Collapsed state */
+.sidebar.collapsed {
+  width: 60px;
+}
+
+/* Hide text labels when collapsed */
+.sidebar.collapsed .nav-link span {
+  display: none;
+}
+
+/* Adjust icon margin when collapsed */
+.sidebar.collapsed .icon {
+  margin-right: 0;
+  text-align: center;
+  width: 100%;
+}
+
+/* Move list down to not overlap toggle */
 .sidebar ul {
-  list-style: none; 
-  padding: 0; 
+  list-style: none;
+  padding: 0;
+  margin-top: 40px;
 }
 
-/* для элементов списка */
-.sidebar li {
-  margin-bottom: 1rem; 
-}
-
-/* для ссылок */
-.sidebar a {
-  color: #ffffff; 
-  text-decoration: none; 
-  display: flex; 
-  align-items: center; 
-}
-
-/* для ссылок при наведении */
-.sidebar a:hover {
-  color: #f2f8f6; /* Цвет текста при наведении */
-}
-
-/* Стили для иконок */
-.icon {
-  width: 2em; /* Ширина иконки */
-  height: 2em; /* Высота иконки */
-  margin-right: 1rem; /* Отступ справа */
-}
-
+/* Navigation link */
 .nav-link {
   color: #ffffff;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  border-radius: 4px;
 }
 
-.nav-link.active {
-  background-color: #6ab399;
+.nav-link .icon {
+  margin-right: 1rem;
 }
 
+.nav-link.active,
 .nav-link:hover {
   background-color: #5a9a85;
+}
+
+/* Icon coloring */
+.icon {
+  width: 2em;
+  height: 2em;
 }

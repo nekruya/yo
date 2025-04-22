@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { NavLink } from 'react-router-dom';
 import './Sidebar.css';
 
 // Иконка "Главная страница"
@@ -72,38 +72,42 @@ function CalendarIcon(props) {
 
 // Компонент боковой панели
 function Sidebar() {
+  const [collapsed, setCollapsed] = useState(false);
   return (
-    <aside className="sidebar">
+    <aside className={`sidebar ${collapsed ? 'collapsed' : ''}`}>
+      <div className="sidebar-toggle" onClick={() => setCollapsed(!collapsed)}>
+        {collapsed ? '»' : '«'}
+      </div>
       <ul>
         <li>
-          <Link to="/" className="nav-link">
+          <NavLink to="/" exact className="nav-link" activeClassName="active">
             <Home2 className="icon" />
-            Главная страница
-          </Link>
+            <span>Главная страница</span>
+          </NavLink>
         </li>
         <li>
-          <Link to="/teachers" className="nav-link">
+          <NavLink to="/teachers" className="nav-link" activeClassName="active">
             <ChalkboardTeacher className="icon" />
-            Учителя
-          </Link>
+            <span>Учителя</span>
+          </NavLink>
         </li>
         <li>
-          <Link to="/students" className="nav-link">
+          <NavLink to="/students" className="nav-link" activeClassName="active">
             <Student className="icon" />
-            Студенты
-          </Link>
+            <span>Студенты</span>
+          </NavLink>
         </li>
         <li>
-          <Link to="/administration" className="nav-link">
+          <NavLink to="/administration" className="nav-link" activeClassName="active">
             <SharpAdminPanelSettings className="icon" />
-            Администрация
-          </Link>
+            <span>Администрация</span>
+          </NavLink>
         </li>
         <li>
-          <Link to="/calendar" className="nav-link">
+          <NavLink to="/calendar" className="nav-link" activeClassName="active">
             <CalendarIcon className="icon" />
-            Календарь
-          </Link>
+            <span>Календарь</span>
+          </NavLink>
         </li>
       </ul>
     </aside>
