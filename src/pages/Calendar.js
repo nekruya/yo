@@ -7,6 +7,7 @@ import startOfWeek from 'date-fns/startOfWeek';
 import getDay from 'date-fns/getDay';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import './Calendar.css';
+import cogoToast from 'cogo-toast';
 
 const locales = {
   'ru-RU': require('date-fns/locale/ru'),
@@ -76,13 +77,16 @@ const Calendar = () => {
       setMyEvents(myEvents.map(event => 
         event === selectedEvent ? { ...selectedEvent, ...newEvent } : event
       ));
+      cogoToast.success('Событие обновлено');
     } else {
       // Add new or recurring events
       if (newEvent.recurrence.type === 'none') {
         setMyEvents([...myEvents, newEvent]);
+        cogoToast.success('Событие добавлено');
       } else {
         const recEvents = generateRecurringEvents(newEvent);
         setMyEvents([...myEvents, ...recEvents]);
+        cogoToast.success(`Добавлено ${recEvents.length} повторений`);
       }
     }
     handleCloseModal();
@@ -91,6 +95,7 @@ const Calendar = () => {
   // Delete existing event
   const handleDeleteEvent = () => {
     setMyEvents(myEvents.filter(event => event !== selectedEvent));
+    cogoToast.warn('Событие удалено');
     handleCloseModal();
   };
 

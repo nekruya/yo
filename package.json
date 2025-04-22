@@ -19,6 +19,7 @@
   "license": "MIT",
   "dependencies": {
     "bootstrap": "^5.3.5",
+    "cogo-toast": "^4.2.3",
     "date-fns": "^4.1.0",
     "react": "^17.0.2",
     "react-big-calendar": "^1.18.0",
