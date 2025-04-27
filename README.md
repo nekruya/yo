@@ -1,73 +1,137 @@
-# Student’s Assistant
+# Помощник учащегося
 
-## обзор
-«Помощник учащегося» — это веб‑приложение на React с управлением учебным процессом и разделением прав по ролям:
-- регистрация и вход (хранение JWT‑токена в localStorage);
-- администратор: управление пользователями (создание, редактирование, удаление), настройка ролей и отчёты;
-- преподаватель: создание и редактирование курсов, планирование расписания, загрузка материалов, общение со студентами;
-- студент: просмотр курсов и расписания, доступ к материалам, участие в обсуждениях, получение уведомлений;
-- расписание: навигация по дням недели, интерактивные карточки занятий, модальные формы добавления/редактирования;
-- календарь: drag-and-drop событий, модальные формы добавления/редактирования/удаления, поддержка повторов;
-- уведомления: cogo-toast для информирования пользователя;
-- единый бело‑зеленый фирменный стиль и адаптивный дизайн.
+## Обзор
+Полнофункциональное веб-приложение для управления образовательными ресурсами и активностями с разграничением прав доступа:
+- **Администратор**: управление пользователями (создание, обновление, удаление), настройка ролей, отчёты
+- **Преподаватель**: создание и редактирование курсов, планирование расписания, загрузка материалов, взаимодействие со студентами
+- **Студент**: просмотр курсов и расписания, доступ к материалам, участие в обсуждениях, получение уведомлений
+- **Расписание**: навигация по дням недели, интерактивные карточки занятий, добавление/редактирование через модальные окна
+- **Календарь**: drag-and-drop событий, добавление/редактирование/удаление через модальные окна, поддержка повторяющихся событий
+- **Уведомления**: использование cogo-toast для информирования пользователя
 
-## структура проекта
+## Структура проекта
 ```
-front/
-├── public/                 # статические файлы (index.html, favicon и др.)
-├── src/                    # исходный код React
-│   ├── components/         # общие компоненты (Header, Sidebar, ProtectedRoute и др.)
-│   ├── pages/              # страницы (Dashboard, Calendar, Schedule, Login, Register и др.)
-│   ├── services/           # работа с localStorage (auth, schedule)
-│   ├── styles/             # глобальные стили и css-переменные
-│   ├── App.js              # главный компонент
-│   └── index.js            # входная точка
-├── package.json            # зависимости и скрипты
-└── .gitignore              # исключения Git
-``` 
+course/ (корневая папка проекта)
+├── backend/                # Python FastAPI бэкенд
+│   ├── main.py             # точка входа приложения
+│   └── requirements.txt    # зависимости Python
+├── front/                  # React фронтенд (Create React App)
+│   ├── public/             # статические файлы
+│   ├── src/                # исходный код (components, pages, services, styles)
+│   ├── package.json        # npm-скрипты и зависимости
+│   └── .gitignore
+├── README.md               # этот файл
+└── .gitignore              # глобальные исключения Git
+```
 
-## установка и запуск
+## Установка и запуск
+
+### Бэкенд
+```bash
+cd backend
+# Создать и активировать виртуальное окружение (Windows)
+python -m venv venv
+venv\Scripts\activate
+# или (Mac/Linux)
+# source venv/bin/activate
+
+# Установить зависимости
+pip install -r requirements.txt
+
+# Запустить сервер разработки
+uvicorn main:app --reload --port 3001
+```
+API будет доступен по адресу `http://localhost:3001/api/...`.
+
+### Фронтенд
 ```bash
 cd front
 npm install
 npm start
 ```
-приложение будет доступно по адресу http://localhost:3000
+Приложение работает на `http://localhost:3000` и будет отправлять API-запросы на бэкенд.
+
+### Одновременный запуск (опционально)
+Вы можете установить `concurrently` и добавить в корневой `package.json`:
+```json
+"scripts": {
+  "start:back": "cd backend && uvicorn main:app --reload --port 3001",
+  "start:front": "cd front && npm start",
+  "start": "concurrently \"npm run start:back\" \"npm run start:front\""
+}
+```
+Запустите:
+```bash
+npm install --save-dev concurrently
+npm run start
+```
+Это одновременно запустит бэкенд и фронтенд.
 
 ---
 
 # Student’s Assistant
 
-## overview
-Student’s Assistant is a React web application with role-based access control and features for managing the educational workflow:
-- registration and login (JWT token in localStorage);
-- admin: user management (create, update, delete), roles and reporting;
-- teacher: course creation/editing, schedule planning, content uploads, student interaction;
-- student: course and schedule viewing, access to materials, discussions, notifications;
-- schedule: day‑by‑day navigation, interactive class cards, add/edit via modals;
-- calendar: drag‑and‑drop events, add/edit/delete modals, recurring events support;
-- notifications using cogo‑toast;
-- consistent white‑and‑green branding and responsive layout.
+## Overview
+A full-stack web application for managing educational resources and activities with role-based access:
+- **Admin**: user management (create, update, delete), roles, reporting
+- **Teacher**: create/edit courses, schedule planning, content uploads, student interaction
+- **Student**: view courses & schedule, access materials, participate in discussions, receive notifications
+- **Schedule**: day-by-day navigation, interactive class cards, add/edit via modals
+- **Calendar**: drag-and-drop events, add/edit/delete modals, recurring events support
+- **Notifications**: using cogo-toast for user feedback
 
-## project structure
+## Project Structure
 ```
-front/
-├── public/
-├── src/
-│   ├── components/
-│   ├── pages/
-│   ├── services/
-│   ├── styles/
-│   ├── App.js
-│   └── index.js
-├── package.json
-└── .gitignore
+course/ (project root)
+├── backend/                # Python FastAPI backend
+│   ├── main.py             # application entrypoint
+│   └── requirements.txt    # Python dependencies
+├── front/                  # React frontend (Create React App)
+│   ├── public/             # static files
+│   ├── src/                # source code (components, pages, services, styles)
+│   ├── package.json        # npm scripts & dependencies
+│   └── .gitignore
+├── README.md               # this file
+└── .gitignore              # root gitignore
 ```
 
-## installation & usage
+## Installation & Usage
+
+### Backend
+```bash
+cd backend
+# Create & activate virtual environment (Windows)
+python -m venv venv
+venv\Scripts\activate
+# or (Mac/Linux)
+# source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run development server
+uvicorn main:app --reload --port 3001
+```
+The API will be available at `http://localhost:3001/api/...`.
+
+### Frontend
 ```bash
 cd front
 npm install
 npm start
 ```
-app will run at http://localhost:3000
+The React app runs at `http://localhost:3000` and proxies API calls to the backend.
+
+### Single-command Start (optional)
+```json
+"scripts": {
+  "start:back": "cd backend && uvicorn main:app --reload --port 3001",
+  "start:front": "cd front && npm start",
+  "start": "concurrently \"npm run start:back\" \"npm run start:front\""
+}
+```
+Then:
+```bash
+npm install --save-dev concurrently
+npm run start
+```

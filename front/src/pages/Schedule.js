@@ -1,12 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import cogoToast from 'cogo-toast';
-import { getSchedules, saveSchedules } from '../services/schedule';
+import {
+  fetchSchedules,
+  createSchedule,
+  updateSchedule,
+  deleteSchedule,
+} from '../services/schedules';
 import './Schedule.css';
 
-const daysOfWeek = ['Понедельник','Вторник','Среда','Четверг','Пятница','Суббота','Воскресенье'];
+const daysOfWeek = [
+  'Понедельник','Вторник','Среда','Четверг','Пятница','Суббота','Воскресенье'
+];
 
 const Schedule = () => {
-  const [schedules, setSchedules] = useState([]);
   const [selectedDay, setSelectedDay] = useState(daysOfWeek[0]);
   const [formData, setFormData] = useState({
     id: null,
@@ -20,11 +27,38 @@ const Schedule = () => {
     group_name: ''
   });
   const [showModal, setShowModal] = useState(false);
-  const [modalMode, setModalMode] = useState('add'); // 'add', 'view', 'edit'
+  const [modalMode, setModalMode] = useState('add');
 
-  useEffect(() => {
-    setSchedules(getSchedules());
-  }, []);
+  const queryClient = useQueryClient();
+  const { data, isLoading, error } = useQuery({ queryKey: ['schedules'], queryFn: fetchSchedules });
+  const schedules = data?.data || [];
+
+  const createMutation = useMutation({
+    mutationFn: createSchedule,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['schedules']);
+      cogoToast.success('Занятие добавлено');
+      setShowModal(false);
+    },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: updateSchedule,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['schedules']);
+      cogoToast.success('Изменения сохранены');
+      setShowModal(false);
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: deleteSchedule,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['schedules']);
+      cogoToast.warn('Занятие удалено');
+      setShowModal(false);
+    },
+  });
 
   const openAddModal = () => {
     setModalMode('add');
@@ -56,27 +90,18 @@ const Schedule = () => {
   const handleModalSubmit = (e) => {
     e.preventDefault();
     if (modalMode === 'add') {
-      const newItem = { ...formData, id: Date.now() };
-      const updated = [...schedules, newItem];
-      saveSchedules(updated);
-      setSchedules(updated);
-      cogoToast.success('Занятие добавлено');
-    } else if (modalMode === 'edit') {
-      const updated = schedules.map(it => it.id === formData.id ? formData : it);
-      saveSchedules(updated);
-      setSchedules(updated);
-      cogoToast.success('Изменения сохранены');
+      createMutation.mutate({ ...formData, id: Date.now() });
+    } else {
+      updateMutation.mutate(formData);
     }
-    setShowModal(false);
   };
 
   const handleDeleteAndClose = (id) => {
-    const updated = schedules.filter(it => it.id !== id);
-    saveSchedules(updated);
-    setSchedules(updated);
-    cogoToast.warn('Занятие удалено');
-    setShowModal(false);
+    deleteMutation.mutate(id);
   };
+
+  if (isLoading) return <div>Loading schedules...</div>;
+  if (error) return <div>Error loading schedules: {error.message}</div>;
 
   return (
     <div className="schedule-page">
@@ -94,7 +119,8 @@ const Schedule = () => {
         <button className="add-btn" onClick={openAddModal}>+ Добавить занятие</button>
       </div>
       <div className="schedule-cards">
-        {schedules.filter(it => it.day_of_week === selectedDay)
+        {schedules
+          .filter(it => it.day_of_week === selectedDay)
           .sort((a, b) => a.start_time.localeCompare(b.start_time))
           .map(item => (
             <div key={item.id} className="schedule-card" onClick={() => openViewModal(item)}>
@@ -108,7 +134,7 @@ const Schedule = () => {
         <div className="modal-overlay" onClick={() => setShowModal(false)}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
             {modalMode === 'view' ? (
-              <>  
+              <>
                 <h2>Детали занятия</h2>
                 <p><strong>Дата:</strong> {formData.date}</p>
                 <p><strong>День:</strong> {formData.day_of_week}</p>
@@ -124,7 +150,7 @@ const Schedule = () => {
                 </div>
               </>
             ) : (
-              <>  
+              <>
                 <h2>{modalMode === 'add' ? 'Добавить занятие' : 'Редактировать занятие'}</h2>
                 <form onSubmit={handleModalSubmit} className="schedule-modal-form">
                   <div className="form-group">
