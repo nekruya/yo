@@ -31,7 +31,7 @@ course/ (корневая папка проекта)
 cd backend
 # Создать и активировать виртуальное окружение (Windows)
 python -m venv venv
-venv\Scripts\activate
+.\.venv\Scripts\activate  
 # или (Mac/Linux)
 # source venv/bin/activate
 
@@ -51,87 +51,16 @@ npm start
 ```
 Приложение работает на `http://localhost:3000` и будет отправлять API-запросы на бэкенд.
 
-### Одновременный запуск (опционально)
-Вы можете установить `concurrently` и добавить в корневой `package.json`:
-```json
-"scripts": {
-  "start:back": "cd backend && uvicorn main:app --reload --port 3001",
-  "start:front": "cd front && npm start",
-  "start": "concurrently \"npm run start:back\" \"npm run start:front\""
-}
+### Одновременный запуск / Single-command Start (optional)
+В **корневой папке проекта** 
 ```
-Запустите:
+Затем выполните:
 ```bash
+npm install
 npm install --save-dev concurrently
 npm run start
 ```
-Это одновременно запустит бэкенд и фронтенд.
+This will start both backend (port 3001) and frontend (port 3000) together.
 
 ---
 
-# Student’s Assistant
-
-## Overview
-A full-stack web application for managing educational resources and activities with role-based access:
-- **Admin**: user management (create, update, delete), roles, reporting
-- **Teacher**: create/edit courses, schedule planning, content uploads, student interaction
-- **Student**: view courses & schedule, access materials, participate in discussions, receive notifications
-- **Schedule**: day-by-day navigation, interactive class cards, add/edit via modals
-- **Calendar**: drag-and-drop events, add/edit/delete modals, recurring events support
-- **Notifications**: using cogo-toast for user feedback
-
-## Project Structure
-```
-course/ (project root)
-├── backend/                # Python FastAPI backend
-│   ├── main.py             # application entrypoint
-│   └── requirements.txt    # Python dependencies
-├── front/                  # React frontend (Create React App)
-│   ├── public/             # static files
-│   ├── src/                # source code (components, pages, services, styles)
-│   ├── package.json        # npm scripts & dependencies
-│   └── .gitignore
-├── README.md               # this file
-└── .gitignore              # root gitignore
-```
-
-## Installation & Usage
-
-### Backend
-```bash
-cd backend
-# Create & activate virtual environment (Windows)
-python -m venv venv
-venv\Scripts\activate
-# or (Mac/Linux)
-# source venv/bin/activate
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Run development server
-uvicorn main:app --reload --port 3001
-```
-The API will be available at `http://localhost:3001/api/...`.
-
-### Frontend
-```bash
-cd front
-npm install
-npm start
-```
-The React app runs at `http://localhost:3000` and proxies API calls to the backend.
-
-### Single-command Start (optional)
-```json
-"scripts": {
-  "start:back": "cd backend && uvicorn main:app --reload --port 3001",
-  "start:front": "cd front && npm start",
-  "start": "concurrently \"npm run start:back\" \"npm run start:front\""
-}
-```
-Then:
-```bash
-npm install --save-dev concurrently
-npm run start
-```

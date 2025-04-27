@@ -1,0 +1,13 @@
+{
+  "name": "students-assistant",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start:back": "cd backend && uvicorn main:app --reload --port 3001",
+    "start:front": "cd front && npm start",
+    "start": "concurrently \"npm run start:back\" \"npm run start:front\""
+  },
+  "devDependencies": {
+    "concurrently": "^7.6.0"
+  }
+} 
