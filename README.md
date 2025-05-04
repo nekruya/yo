@@ -30,7 +30,7 @@ course/ (корневая папка проекта)
 ```bash
 cd backend
 # Создать и активировать виртуальное окружение (Windows)
-python -m venv venv
+python -m venv .venv
 .\.venv\Scripts\activate  
 # или (Mac/Linux)
 # source venv/bin/activate
@@ -46,7 +46,7 @@ API будет доступен по адресу `http://localhost:3001/api/...
 ### Фронтенд
 ```bash
 cd front
-npm install
+npm install --legacy-peer-deps
 npm start
 ```
 Приложение работает на `http://localhost:3000` и будет отправлять API-запросы на бэкенд.
@@ -56,11 +56,131 @@ npm start
 ```
 Затем выполните:
 ```bash
-npm install
+npm install --legacy-peer-deps
 npm install --save-dev concurrently
 npm run start
 ```
 This will start both backend (port 3001) and frontend (port 3000) together.
+
+## Регистрация ролей, пользователей и получение JWT
+
+### 1. Создание ролей
+
+Роли должны иметь уникальные имена. Пример создания нескольких ролей:
+
+Unix shell:
+```bash
+curl -X POST http://localhost:3001/api/roles \
+  -H "Content-Type: application/json" \
+  -d '{ "name":"admin","description":"Администратор" }'
+
+curl -X POST http://localhost:3001/api/roles \
+  -H "Content-Type: application/json" \
+  -d '{ "name":"teacher","description":"Преподаватель" }'
+
+curl -X POST http://localhost:3001/api/roles \
+  -H "Content-Type: application/json" \
+  -d '{ "name":"student","description":"Студент" }'
+```
+
+PowerShell:
+```powershell
+curl.exe -X POST "http://localhost:3001/api/roles" -H "Content-Type: application/json" -d '{ "name":"admin","description":"Администратор" }'
+
+Invoke-RestMethod -Uri "http://localhost:3001/api/roles" -Method POST -ContentType "application/json" -Body (@{ name="admin"; description="Администратор" } | ConvertTo-Json -Compress)
+
+Invoke-RestMethod -Uri "http://localhost:3001/api/roles" -Method POST -ContentType "application/json" -Body (@{ name="teacher"; description="Преподаватель" } | ConvertTo-Json -Compress)
+
+Invoke-RestMethod -Uri "http://localhost:3001/api/roles" -Method POST -ContentType "application/json" -Body (@{ name="student"; description="Студент" } | ConvertTo-Json -Compress)
+```
+
+### 2. Создание пользователя
+
+Поля `username` и `email` должны быть уникальными. Если вы попытаетесь создать пользователя с уже занятым `username` или `email`, API вернёт `400 Bad Request` с сообщением:
+
+```json
+{ "detail": "Username already exists" }
+```
+или
+```json
+{ "detail": "Email already exists" }
+```
+
+Unix shell:
+```bash
+curl -X POST http://localhost:3001/api/users \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username":"admin",
+    "email":"admin@example.com",
+    "password":"adminpass",
+    "full_name":"Администратор сайта",
+    "is_active":true,
+    "roles":[1]
+  }'
+```
+
+PowerShell:
+```powershell
+Invoke-RestMethod -Method POST `
+  -Uri http://localhost:3001/api/users `
+  -Headers @{ "Content-Type"="application/json" } `
+  -Body '{"username":"admin","email":"admin@example.com","password":"adminpass","full_name":"Администратор сайта","is_active":true,"roles":[1]}'
+```
+
+### 3. Получение JWT-токена
+
+Unix shell:
+```bash
+curl -X POST http://localhost:3001/token \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "username=admin&password=adminpass"
+```
+
+PowerShell:
+```powershell
+$resp = Invoke-RestMethod -Method POST `
+  -Uri http://localhost:3001/token `
+  -Body @{ username="admin"; password="adminpass" } `
+  -ContentType "application/x-www-form-urlencoded"
+$token = $resp.access_token
+Write-Host "JWT:" $token
+```
+$body = @{ username="aaa"; password="aaapass" }
+$resp = Invoke-RestMethod -Method Post `
+  -Uri http://localhost:3001/token `
+  -Body $body `
+  -ContentType "application/x-www-form-urlencoded"
+Write-Host "JWT token:" $resp.access_token
+
+### 4. Вызов защищённых эндпоинтов
+
+Unix shell:
+```bash
+curl -H "Authorization: Bearer <ваш_токен>" http://localhost:3001/api/roles
+curl -H "Authorization: Bearer <ваш_токен>" http://localhost:3001/api/users
+```
+
+PowerShell:
+```powershell
+Invoke-RestMethod -Uri "http://localhost:3001/api/roles" -Headers @{ Authorization = "Bearer $token" }
+Invoke-RestMethod -Uri "http://localhost:3001/api/users" -Headers @{ Authorization = "Bearer $token" }
+```
+
+## Защищённые API-эндпоинты
+
+Ниже перечислены эндпоинты, доступ к которым требует заголовок:
+
+```
+Authorization: Bearer <token>
+```
+
+- **GET  /api/roles**   — получить список всех ролей
+- **POST /api/roles**   — создать новую роль
+- **GET  /api/users**   — получить список всех пользователей
+- **POST /api/users**   — создать нового пользователя
+
+(Чтобы узнать ID роли для создания пользователя, сначала выполните GET `/api/roles`. )
 
 ---
 

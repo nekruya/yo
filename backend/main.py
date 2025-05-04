@@ -1,7 +1,15 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends, status
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List
+from database import SessionLocal, init_db, get_db
+from sqlalchemy.orm import Session
+from crud import create_role, get_roles, create_user, get_users  # import CRUD functions
+from schemas import RoleCreate, Role, UserCreate, User, Token  # import Pydantic schemas
+from fastapi.security import OAuth2PasswordRequestForm
+from auth import authenticate_user, create_access_token
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 
 app = FastAPI()
 
@@ -100,4 +108,56 @@ def update_schedule(id: int, schedule: Schedule):
 def delete_schedule(id: int):
     global schedules
     schedules = [s for s in schedules if s.id != id]
-    return {"ok": True} 
+    return {"ok": True}
+
+# Roles endpoints
+@app.post("/api/roles", response_model=Role)
+def api_create_role(role: RoleCreate, db: Session = Depends(get_db)):
+    return create_role(db, role)
+
+@app.get("/api/roles", response_model=List[Role])
+def api_list_roles(db: Session = Depends(get_db)):
+    return get_roles(db)
+
+# Users endpoints
+@app.post("/api/users", response_model=User)
+def api_create_user(user: UserCreate, db: Session = Depends(get_db)):
+    return create_user(db, user)
+
+@app.get("/api/users", response_model=List[User])
+def api_list_users(db: Session = Depends(get_db)):
+    return get_users(db)
+
+# Mount 'static' directory for serving files
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+# Favicon route to avoid 404
+@app.get("/favicon.ico", include_in_schema=False)
+async def favicon():
+    return FileResponse("static/favicon.ico")
+
+@app.on_event("startup")
+async def on_startup():
+    init_db()
+
+@app.post("/token", response_model=Token)
+async def login_for_access_token(
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    db: Session = Depends(get_db),
+):
+    user = authenticate_user(db, form_data.username, form_data.password)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    access_token = create_access_token(data={"sub": user.username})
+    return {"access_token": access_token, "token_type": "bearer"}
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close() 
