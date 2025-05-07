@@ -8,12 +8,12 @@ const Teachers = () => {
   const history = useHistory();
   const { data, isLoading, error } = useQuery({ queryKey: ['teachers'], queryFn: fetchTeachers });
 
-  // Обработчик нажатия на кнопку "Расписание"
+  // обработчик нажатия на кнопку "расписание"
   const handleScheduleClick = () => {
     history.push('/schedule');
   };
 
-  // Обработчик нажатия на кнопку "Курсы"
+  // обработчик нажатия на кнопку "курсы"
   const handleCoursesClick = () => {
     history.push('/teacher-courses');
   };

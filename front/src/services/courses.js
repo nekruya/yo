@@ -1,13 +1,13 @@
 import { api } from './axios';
 
-// fetch all courses
+// получить все курсы
 export const fetchCourses = () => api.get('/courses');
 
-// create a new course
+// создать новый курс
 export const createCourse = (course) => api.post('/courses', course);
 
-// delete a course
+// удалить курс
 export const deleteCourse = (id) => api.delete(`/courses/${id}`);
 
-// update a course (optional, if backend supports it)
+// обновить курс (опционально, если поддерживает бэкенд)
 export const updateCourse = (course) => api.put(`/courses/${course.id}`, course); 

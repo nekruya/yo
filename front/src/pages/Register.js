@@ -16,14 +16,14 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Register the user
+      // зарегистрировать пользователя
       await register(name, email, password, role);
-      // Automatically log in to retrieve JWT
+      // автоматически войти, чтобы получить jwt
       await login(email, password);
       cogoToast.success('Регистрация и вход выполнены успешно');
       history.push('/dashboard');
     } catch (error) {
-      // Display server-provided detail or generic error
+      // отобразить сообщение от сервера или общую ошибку
       const serverMessage = error.response?.data?.detail || JSON.stringify(error.response?.data) || error.message;
       console.error('Registration error:', error.response?.data || error);
       cogoToast.error(serverMessage);

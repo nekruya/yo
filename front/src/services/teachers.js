@@ -1,13 +1,13 @@
 import { api } from './axios';
 
-// fetch all teachers
+// получить всех преподавателей
 export const fetchTeachers = () => api.get('/teachers');
 
-// create a new teacher
+// создать нового преподавателя
 export const createTeacher = (teacher) => api.post('/teachers', teacher);
 
-// delete a teacher
+// удалить преподавателя
 export const deleteTeacher = (id) => api.delete(`/teachers/${id}`);
 
-// update a teacher
+// обновить преподавателя
 export const updateTeacher = (teacher) => api.put(`/teachers/${teacher.id}`, teacher); 

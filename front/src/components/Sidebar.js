@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import './Sidebar.css';
 
-// Иконка "Главная страница"
+// иконка "главная страница"
 function Home2(props) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="2em" height="2em" {...props}>
@@ -18,7 +18,7 @@ function Home2(props) {
   );
 }
 
-// Иконка "Студенты"
+// иконка "студенты"
 function Student(props) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="2em" height="2em" {...props}>
@@ -30,7 +30,7 @@ function Student(props) {
   );
 }
 
-// Иконка "Учителя"
+// иконка "учителя"
 function ChalkboardTeacher(props) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="2em" height="2em" {...props}>
@@ -42,7 +42,7 @@ function ChalkboardTeacher(props) {
   );
 }
 
-// Иконка "Администрация"
+// иконка "администрация"
 function SharpAdminPanelSettings(props) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="2em" height="2em" {...props}>
@@ -58,7 +58,7 @@ function SharpAdminPanelSettings(props) {
   );
 }
 
-// Иконка "Календарь"
+// иконка "календарь"
 function CalendarIcon(props) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" {...props}>
@@ -70,7 +70,7 @@ function CalendarIcon(props) {
   );
 }
 
-// Компонент боковой панели
+// компонент боковой панели
 function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
   return (

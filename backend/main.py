@@ -4,8 +4,8 @@ from pydantic import BaseModel
 from typing import List
 from database import SessionLocal, init_db, get_db
 from sqlalchemy.orm import Session
-from crud import create_role, get_roles, create_user, get_users, get_role_by_name  # import CRUD functions
-from schemas import RoleCreate, Role, UserCreate, User, Token  # import Pydantic schemas
+from crud import create_role, get_roles, create_user, get_users, get_role_by_name  # импортировать функции crud
+from schemas import RoleCreate, Role, UserCreate, User, Token  # импортировать схемы pydantic
 from fastapi.security import OAuth2PasswordRequestForm
 from auth import authenticate_user, create_access_token
 from fastapi.staticfiles import StaticFiles
@@ -25,7 +25,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Data models
+# модели данных
 class Course(BaseModel):
     id: int
     title: str
@@ -50,13 +50,13 @@ class Schedule(BaseModel):
     classroom: str
     group_name: str
 
-# In-memory storage
+# хранилище в памяти
 courses: List[Course] = []
 students: List[Student] = []
 teachers: List[Teacher] = []
 schedules: List[Schedule] = []
 
-# Courses
+# курсы
 @app.get("/api/courses", response_model=List[Course])
 def list_courses():
     return courses
@@ -66,7 +66,7 @@ def create_course(course: Course):
     courses.append(course)
     return course
 
-# Students
+# студенты
 @app.get("/api/students", response_model=List[Student])
 def list_students():
     return students
@@ -76,7 +76,7 @@ def create_student(student: Student):
     students.append(student)
     return student
 
-# Teachers
+# преподаватели
 @app.get("/api/teachers", response_model=List[Teacher])
 def list_teachers():
     return teachers
@@ -86,7 +86,7 @@ def create_teacher(teacher: Teacher):
     teachers.append(teacher)
     return teacher
 
-# Schedules
+# расписания
 @app.get("/api/schedules", response_model=List[Schedule])
 def list_schedules():
     return schedules
@@ -110,7 +110,7 @@ def delete_schedule(id: int):
     schedules = [s for s in schedules if s.id != id]
     return {"ok": True}
 
-# Roles endpoints
+# endpoints для ролей
 @app.post("/api/roles", response_model=Role)
 def api_create_role(role: RoleCreate, db: Session = Depends(get_db)):
     return create_role(db, role)
@@ -119,7 +119,7 @@ def api_create_role(role: RoleCreate, db: Session = Depends(get_db)):
 def api_list_roles(db: Session = Depends(get_db)):
     return get_roles(db)
 
-# Users endpoints
+# endpoints для пользователей
 @app.post("/api/users", response_model=User)
 def api_create_user(user: UserCreate, db: Session = Depends(get_db)):
     return create_user(db, user)
@@ -128,10 +128,10 @@ def api_create_user(user: UserCreate, db: Session = Depends(get_db)):
 def api_list_users(db: Session = Depends(get_db)):
     return get_users(db)
 
-# Mount 'static' directory for serving files
+# монтировать директорию 'static' для обслуживания файлов
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-# Favicon route to avoid 404
+# маршрут favicon для избежания 404
 @app.get("/favicon.ico", include_in_schema=False)
 async def favicon():
     return FileResponse("static/favicon.ico")
@@ -139,7 +139,7 @@ async def favicon():
 @app.on_event("startup")
 async def on_startup():
     init_db()
-    # Seed default roles if they do not exist
+    # заполнить роли по умолчанию, если они не существуют
     db = SessionLocal()
     try:
         for name, desc in [("student", "Student role"), ("teacher", "Teacher role"), ("admin", "Administrator role")]:

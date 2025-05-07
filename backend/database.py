@@ -4,29 +4,29 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from typing import Generator
 
-# SQLAlchemy database URL, defaulting to a local SQLite file
+# url базы данных sqlalchemy, по умолчанию локальный файл sqlite
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./users.db")
 
-# Create engine; for SQLite, disable thread check
+# создать движок; для sqlite отключить проверку потоков
 engine = create_engine(
     DATABASE_URL,
     connect_args={"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {}
 )
 
-# Create a configured "Session" class
+# создать настроенный класс session
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-# Base class for declarative class definitions
+# базовый класс для декларативных определений классов
 Base = declarative_base()
 
 
 def init_db():
     """
-    Initialize the database by creating all tables.
+    инициализировать базу данных, создавая все таблицы.
     """
     Base.metadata.create_all(bind=engine)
 
-# Provide a database session dependency
+# предоставить зависимость сеанса базы данных
 def get_db() -> Generator:
     db = SessionLocal()
     try:

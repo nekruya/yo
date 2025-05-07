@@ -6,7 +6,7 @@ import datetime
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException
 
-# Password hashing
+# хеширование паролей
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def get_password_hash(password: str) -> str:
@@ -15,7 +15,7 @@ def get_password_hash(password: str) -> str:
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
 
-# Role CRUD
+# crud для ролей
 
 def get_role(db: Session, role_id: int):
     return db.query(Role).filter(Role.id == role_id).first()
@@ -27,7 +27,7 @@ def get_roles(db: Session, skip: int = 0, limit: int = 100):
     return db.query(Role).offset(skip).limit(limit).all()
 
 def create_role(db: Session, role: RoleCreate):
-    # Prevent duplicate role creation
+    # предотвращение создания дубликатов ролей
     existing = get_role_by_name(db, role.name)
     if existing:
         raise HTTPException(status_code=400, detail="Role already exists")
@@ -41,7 +41,7 @@ def create_role(db: Session, role: RoleCreate):
         db.rollback()
         raise HTTPException(status_code=400, detail="Role already exists")
 
-# User CRUD
+# crud для пользователей
 
 def get_user(db: Session, user_id: int):
     return db.query(User).filter(User.id == user_id).first()
@@ -53,7 +53,7 @@ def get_users(db: Session, skip: int = 0, limit: int = 100):
     return db.query(User).offset(skip).limit(limit).all()
 
 def create_user(db: Session, user: UserCreate):
-    # Prevent duplicate username or email
+    # предотвращение дублирования имени пользователя или email
     if get_user_by_username(db, user.username):
         raise HTTPException(status_code=400, detail="Username already exists")
     if db.query(User).filter(User.email == user.email).first():
@@ -94,7 +94,7 @@ def delete_user(db: Session, db_user: User):
     db.delete(db_user)
     db.commit()
 
-# Activity logging
+# запись активности
 
 def create_user_activity(db: Session, user_id: int, event_type: str, details: str = None):
     activity = UserActivity(

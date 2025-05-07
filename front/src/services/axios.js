@@ -1,18 +1,18 @@
 import axios from 'axios';
 import { getToken } from './auth';
 
-// Debug environment variable
+// отладочная переменная окружения
 console.log('[ENV] REACT_APP_API_URL =', process.env.REACT_APP_API_URL);
 
 export const api = axios.create({
     baseURL: 'http://localhost:3001/api',
 });
 
-// Diagnostic logs
+// диагностические логи
 console.log('[API] baseURL =', api.defaults.baseURL);
 api.interceptors.request.use(
   config => {
-    // attach JWT token if available
+    // прикрепить jwt-токен, если доступен
     const token = getToken();
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;

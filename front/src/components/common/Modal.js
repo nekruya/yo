@@ -1,5 +1,5 @@
 import React from 'react';
-import './Modal.css'; // Assuming you will create a CSS file for modal styles
+import './Modal.css'; // предполагается, что вы создадите файл css для стилей модального окна
 
 const Modal = ({ isOpen, onClose, children }) => {
     if (!isOpen) return null;

@@ -9,7 +9,7 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
 from crud import get_user_by_username, verify_password
 
-# SECRET_KEY should be kept secure; in production, load from env
+# secret_key должен храниться в безопасности; в продакшене загружать из окружения
 SECRET_KEY = "YOUR_SECRET_KEY"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60

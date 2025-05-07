@@ -24,7 +24,7 @@ const Profile = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!currentUser) {
-            // login flow
+            // процесс входа
             try {
                 const u = await login(email, password);
                 setCurrentUser(u);
@@ -35,7 +35,7 @@ const Profile = () => {
                 cogoToast.error(msg);
             }
         } else {
-            // profile update (not implemented) - just notify
+            // обновление профиля (не реализовано) - только уведомление
             cogoToast.info('Профиль обновлён');
         }
     };

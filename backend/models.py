@@ -1,10 +1,10 @@
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, Table, Text
 from sqlalchemy.orm import relationship
-from database import Base  # import Base from root-level database.py
+from database import Base  # импортировать Base из database.py корневого уровня
 
 import datetime
 
-# Association table for many-to-many relationship between Users and Roles
+# таблица связей многие-ко-многим между пользователями и ролями
 user_roles = Table(
     'user_roles',
     Base.metadata,
@@ -22,7 +22,7 @@ class User(Base):
     full_name = Column(String, nullable=True)
     is_active = Column(Boolean, default=True)
 
-    # relationships
+    # связи
     roles = relationship('Role', secondary=user_roles, back_populates='users')
     activities = relationship('UserActivity', back_populates='user')
 

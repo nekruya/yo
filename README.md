@@ -46,7 +46,7 @@ API будет доступен по адресу `http://localhost:3001/api/...
 ### Фронтенд
 ```bash
 cd front
-npm install --legacy-peer-deps
+npm install 
 npm start
 ```
 Приложение работает на `http://localhost:3000` и будет отправлять API-запросы на бэкенд.
@@ -56,7 +56,7 @@ npm start
 ```
 Затем выполните:
 ```bash
-npm install --legacy-peer-deps
+npm install
 npm install --save-dev concurrently
 npm run start
 ```

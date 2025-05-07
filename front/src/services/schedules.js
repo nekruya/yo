@@ -1,13 +1,13 @@
 import { api } from './axios';
 
-// fetch all schedules
+// получить все расписания
 export const fetchSchedules = () => api.get('/schedules');
 
-// create a new schedule
+// создать новое расписание
 export const createSchedule = (schedule) => api.post('/schedules', schedule);
 
-// update a schedule
+// обновить расписание
 export const updateSchedule = (schedule) => api.put(`/schedules/${schedule.id}`, schedule);
 
-// delete a schedule
+// удалить расписание
 export const deleteSchedule = (id) => api.delete(`/schedules/${id}`); 
