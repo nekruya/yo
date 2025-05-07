@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useHistory, Link } from 'react-router-dom';
 import cogoToast from 'cogo-toast';
 import { login } from '../services/auth';
-import './Welcome.css';
+import InputField from '../components/common/InputField';
+import './Profile.css';
 
 const Login = () => {
   const history = useHistory();
@@ -21,30 +22,26 @@ const Login = () => {
   };
 
   return (
-    <div className="welcome-container">
-      <h1>Вход в систему</h1>
-      <form onSubmit={handleSubmit} className="welcome-form">
-        <div className="form-group">
-          <label>Email:</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label>Пароль:</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-        <button type="submit">Войти</button>
+    <div className="profile-container">
+      <h1 className="profile-title">Вход в систему</h1>
+      <form onSubmit={handleSubmit} className="profile-form">
+        <InputField
+          label="Email"
+          name="email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <InputField
+          label="Пароль"
+          name="password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <button type="submit" className="btn btn-primary">Войти</button>
       </form>
-      <p>
+      <p className="register-link">
         Нет аккаунта? <Link to="/register">Зарегистрироваться</Link>
       </p>
     </div>

@@ -146,12 +146,21 @@ $resp = Invoke-RestMethod -Method POST `
 $token = $resp.access_token
 Write-Host "JWT:" $token
 ```
-$body = @{ username="aaa"; password="aaapass" }
-$resp = Invoke-RestMethod -Method Post `
-  -Uri http://localhost:3001/token `
-  -Body $body `
-  -ContentType "application/x-www-form-urlencoded"
-Write-Host "JWT token:" $resp.access_token
+
+### 3.1. Просмотр JWT-токена в браузере
+
+Чтобы увидеть сохранённый JWT-токен в браузере:
+1. Откройте DevTools (F12).
+2. Перейдите на вкладку «Application» (или «Storage»).
+3. В разделе Local Storage выберите `http://localhost:3000`.
+4. Найдите ключ `token` — в его значении хранится ваш JWT в формате `header.payload.signature`.
+
+Дополнительно:
+- В консоли DevTools выполните:
+  ```js
+  localStorage.getItem('token')
+  ```
+- На вкладке «Network» выберите запрос к API и в секции Headers найдите заголовок `Authorization: Bearer <ваш_JWT>`.
 
 ### 4. Вызов защищённых эндпоинтов
 

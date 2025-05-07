@@ -1,54 +1,60 @@
 // src/services/auth.js
 
-// получить сохраненных пользователей или инициализировать пустой массив
-export const getUsers = () => {
-  const users = localStorage.getItem('users');
-  return users ? JSON.parse(users) : [];
-};
+import axios from 'axios';
+import { api } from './axios';
 
-// сохранить массив пользователей в localStorage
-export const saveUsers = (users) => {
-  localStorage.setItem('users', JSON.stringify(users));
-};
-
-// зарегистрировать нового пользователя и сохранить в localStorage
-export const register = (name, email, password, role) => {
-  const users = getUsers();
-  if (users.some(u => u.email === email)) {
-    throw new Error('Пользователь с таким email уже существует');
+// register a new user using backend API
+export const register = async (name, email, password, role) => {
+  // fetch available roles to find the matching role ID
+  const { data: roles } = await api.get('/roles');
+  const roleObj = roles.find(r => r.name === role);
+  if (!roleObj) {
+    throw new Error(`Role '${role}' not found`);
   }
-  const newUser = { id: Date.now(), name, email, password, role };
-  users.push(newUser);
-  saveUsers(users);
-  return newUser;
+  const body = {
+    username: email,    // use email as username
+    email,
+    password,
+    full_name: name,
+    is_active: true,
+    roles: [roleObj.id],
+  };
+  await api.post('/users', body);
 };
 
-// войти: проверить учетные данные и выдать простой токен
-export const login = (email, password) => {
-  const users = getUsers();
-  const user = users.find(u => u.email === email && u.password === password);
+// login: authenticate via backend and obtain JWT token
+export const login = async (username, password) => {
+  // request token
+  const params = new URLSearchParams();
+  params.append('username', username);
+  params.append('password', password);
+  const resp = await axios.post('http://localhost:3001/token', params, {
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+  });
+  const { access_token } = resp.data;
+  // save token
+  localStorage.setItem('token', access_token);
+
+  // fetch user details
+  const { data: users } = await api.get('/users');
+  const user = users.find(u => u.username === username);
   if (!user) {
-    throw new Error('Неверный email или пароль');
+    throw new Error('Authenticated user data not found');
   }
-  // сгенерировать простой токен (на основе timestamp)
-  const token = Date.now().toString();
-  localStorage.setItem('token', token);
   localStorage.setItem('currentUser', JSON.stringify(user));
   return user;
 };
 
-// выйти: удалить токен и данные текущего пользователя
+// logout: clear stored token and user data
 export const logout = () => {
   localStorage.removeItem('token');
   localStorage.removeItem('currentUser');
 };
 
-// получить текущий токен из localStorage
-export const getToken = () => {
-  return localStorage.getItem('token');
-};
+// get saved JWT token
+export const getToken = () => localStorage.getItem('token');
 
-// получить залогиненного пользователя из localStorage
+// get stored current user data
 export const getCurrentUser = () => {
   const user = localStorage.getItem('currentUser');
   return user ? JSON.parse(user) : null;

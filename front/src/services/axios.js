@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { getToken } from './auth';
 
 // Debug environment variable
 console.log('[ENV] REACT_APP_API_URL =', process.env.REACT_APP_API_URL);
@@ -11,6 +12,11 @@ export const api = axios.create({
 console.log('[API] baseURL =', api.defaults.baseURL);
 api.interceptors.request.use(
   config => {
+    // attach JWT token if available
+    const token = getToken();
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
     console.log(`[API Request] ${config.method.toUpperCase()} ${config.baseURL}${config.url}`);
     return config;
   },

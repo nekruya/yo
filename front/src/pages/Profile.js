@@ -1,54 +1,107 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useHistory } from 'react-router-dom';
 import InputField from '../components/common/InputField';
 import './Profile.css';
 import '../styles.css'; 
+import cogoToast from 'cogo-toast';
+import { login, logout, getCurrentUser } from '../services/auth';
 
 const Profile = () => {
-    const [userData, setUserData] = useState({
-        name: '',
-        email: '',
-        phone: '',
-    });
+    const history = useHistory();
+    const [currentUser, setCurrentUser] = useState(null);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [fullName, setFullName] = useState('');
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setUserData({ ...userData, [name]: value });
+    useEffect(() => {
+        const u = getCurrentUser();
+        if (u) {
+            setCurrentUser(u);
+            setFullName(u.full_name);
+        }
+    }, []);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (!currentUser) {
+            // login flow
+            try {
+                const u = await login(email, password);
+                setCurrentUser(u);
+                setFullName(u.full_name);
+                cogoToast.success('Успешный вход');
+            } catch (err) {
+                const msg = err.response?.data?.detail || err.message;
+                cogoToast.error(msg);
+            }
+        } else {
+            // profile update (not implemented) - just notify
+            cogoToast.info('Профиль обновлён');
+        }
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        
-        console.log('Profile updated:', userData);
+    const handleLogout = () => {
+        logout();
+        setCurrentUser(null);
+        setEmail('');
+        setPassword('');
+        setFullName('');
+        history.push('/');
     };
 
     return (
         <div className="profile-container">
-            <h1 className="profile-title">Авторизация</h1>
+            <h1 className="profile-title">
+                {currentUser ? 'Профиль' : 'Авторизация'}
+            </h1>
             <form onSubmit={handleSubmit} className="profile-form">
-                <InputField
-                    label="Имя"
-                    name="name"
-                    value={userData.name}
-                    onChange={handleChange}
-                />
-                <InputField
-                    label="Электронная почта"
-                    name="email"
-                    value={userData.email}
-                    onChange={handleChange}
-                />
-                <InputField
-                    label="Телефон"
-                    name="phone"
-                    value={userData.phone}
-                    onChange={handleChange}
-                />
-                <button type="button" className="btn btn-primary">Войти</button>
+                {!currentUser && (
+                    <> 
+                        <InputField
+                            label="Email"
+                            name="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
+                        <InputField
+                            label="Пароль"
+                            type="password"
+                            name="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
+                    </>
+                )}
+                {currentUser && (
+                    <>
+                        <InputField
+                            label="Имя"
+                            name="name"
+                            value={fullName}
+                            onChange={(e) => setFullName(e.target.value)}
+                        />
+                        <InputField
+                            label="Email"
+                            name="email"
+                            value={currentUser.email}
+                            disabled
+                        />
+                    </>
+                )}
+                <button type="submit" className="btn btn-primary">
+                    {currentUser ? 'Обновить профиль' : 'Войти'}
+                </button>
+                {currentUser && (
+                    <button type="button" className="btn btn-secondary" onClick={handleLogout}>
+                        Выйти
+                    </button>
+                )}
             </form>
-            <p className="register-link">
-                Еще нет аккаунта? <Link to="/register">Зарегистрироваться</Link>
-            </p>
+            {!currentUser && (
+                <p className="register-link">
+                    Еще нет аккаунта? <Link to="/register">Зарегистрироваться</Link>
+                </p>
+            )}
         </div>
     );
 };

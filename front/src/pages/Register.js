@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useHistory, Link } from 'react-router-dom';
 import cogoToast from 'cogo-toast';
-import { register } from '../services/auth';
+import { register, login } from '../services/auth';
 import './Welcome.css';
 
 const Register = () => {
@@ -14,11 +14,17 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      // Register the user
       await register(name, email, password, role);
-      cogoToast.success('Регистрация успешна');
-      history.push('/login');
+      // Automatically log in to retrieve JWT
+      await login(email, password);
+      cogoToast.success('Регистрация и вход выполнены успешно');
+      history.push('/dashboard');
     } catch (error) {
-      cogoToast.error(error.message);
+      // Display server-provided detail or generic error
+      const serverMessage = error.response?.data?.detail || JSON.stringify(error.response?.data) || error.message;
+      console.error('Registration error:', error.response?.data || error);
+      cogoToast.error(serverMessage);
     }
   };
 

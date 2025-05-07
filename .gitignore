@@ -24,3 +24,8 @@ yarn-debug.log*
 yarn-error.log*
 
 dist/
+
+.venv/
+backend/.venv/
+
+backend/users.db
