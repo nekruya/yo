@@ -3,7 +3,7 @@ import { Link, useHistory } from 'react-router-dom';
 import InputField from '../components/common/InputField';
 import './Profile.css';
 import '../styles.css'; 
-import cogoToast from 'cogo-toast';
+import { toast } from 'react-toastify';
 import { login, logout, getCurrentUser } from '../services/auth';
 
 const Profile = () => {
@@ -29,14 +29,14 @@ const Profile = () => {
                 const u = await login(email, password);
                 setCurrentUser(u);
                 setFullName(u.full_name);
-                cogoToast.success('Успешный вход');
+                toast.success('Успешный вход');
             } catch (err) {
                 const msg = err.response?.data?.detail || err.message;
-                cogoToast.error(msg);
+                toast.error(msg);
             }
         } else {
             // обновление профиля (не реализовано) - только уведомление
-            cogoToast.info('Профиль обновлён');
+            toast.info('Профиль обновлён');
         }
     };
 

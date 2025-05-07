@@ -9,7 +9,7 @@ import getDay from 'date-fns/getDay';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import 'react-big-calendar/lib/addons/dragAndDrop/styles.css';
 import './Calendar.css';
-import cogoToast from 'cogo-toast';
+import { toast } from 'react-toastify';
 
 const locales = {
   'ru-RU': require('date-fns/locale/ru'),
@@ -79,13 +79,13 @@ const Calendar = () => {
   // обработка перемещения события
   const handleEventDrop = ({ event, start, end }) => {
     setMyEvents(old => old.map(e => e === event ? { ...e, start, end } : e));
-    cogoToast.info('Событие перемещено');
+    toast.info('Событие перемещено');
   };
 
   // обработка изменения размера события
   const handleEventResize = ({ event, start, end }) => {
     setMyEvents(old => old.map(e => e === event ? { ...e, start, end } : e));
-    cogoToast.info('Событие изменено');
+    toast.info('Событие изменено');
   };
 
   const handleSaveEvent = () => {
@@ -94,16 +94,16 @@ const Calendar = () => {
       setMyEvents(myEvents.map(event => 
         event === selectedEvent ? { ...selectedEvent, ...newEvent } : event
       ));
-      cogoToast.success('Событие обновлено');
+      toast.success('Событие обновлено');
     } else {
       // добавление нового или повторяющегося события
       if (newEvent.recurrence.type === 'none') {
         setMyEvents([...myEvents, newEvent]);
-        cogoToast.success('Событие добавлено');
+        toast.success('Событие добавлено');
       } else {
         const recEvents = generateRecurringEvents(newEvent);
         setMyEvents([...myEvents, ...recEvents]);
-        cogoToast.success(`Добавлено ${recEvents.length} повторений`);
+        toast.success(`Добавлено ${recEvents.length} повторений`);
       }
     }
     handleCloseModal();
@@ -112,7 +112,7 @@ const Calendar = () => {
   // удаление существующего события
   const handleDeleteEvent = () => {
     setMyEvents(myEvents.filter(event => event !== selectedEvent));
-    cogoToast.warn('Событие удалено');
+    toast.warn('Событие удалено');
     handleCloseModal();
   };
 

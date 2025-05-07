@@ -20,6 +20,8 @@ import Register from './pages/Register';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from './services/queryClient';
 import ErrorBoundary from './components/ErrorBoundary';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
 
 function App() {
   return (
@@ -54,6 +56,7 @@ function App() {
           </div>
         </Router>
       </ErrorBoundary>
+      <ToastContainer />
     </QueryClientProvider>
   );
 }

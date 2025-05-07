@@ -1,11 +1,11 @@
 import { QueryClient, QueryCache, MutationCache } from '@tanstack/react-query';
-import cogoToast from 'cogo-toast';
+import { toast } from 'react-toastify';
 
 export const queryClient = new QueryClient({
   queryCache: new QueryCache({
     onError: (error, query) => {
       const title = query.meta?.toasterTitle || 'Error';
-      cogoToast.error(title);
+      toast.error(title);
       query.meta?.onError?.(error, query);
     },
     onSuccess: (data, query) => {
@@ -15,7 +15,7 @@ export const queryClient = new QueryClient({
   mutationCache: new MutationCache({
     onError: (error, variables, context, mutation) => {
       const title = mutation.meta?.toasterTitle || 'Error';
-      cogoToast.error(title);
+      toast.error(title);
       mutation.meta?.onError?.(error, variables, context, mutation);
     },
     onSuccess: (data, variables, context, mutation) => {

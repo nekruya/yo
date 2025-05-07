@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import cogoToast from 'cogo-toast';
+import { toast } from 'react-toastify';
 import {
   fetchSchedules,
   createSchedule,
@@ -37,7 +37,7 @@ const Schedule = () => {
     mutationFn: createSchedule,
     onSuccess: () => {
       queryClient.invalidateQueries(['schedules']);
-      cogoToast.success('Занятие добавлено');
+      toast.success('Занятие добавлено');
       setShowModal(false);
     },
   });
@@ -46,7 +46,7 @@ const Schedule = () => {
     mutationFn: updateSchedule,
     onSuccess: () => {
       queryClient.invalidateQueries(['schedules']);
-      cogoToast.success('Изменения сохранены');
+      toast.success('Изменения сохранены');
       setShowModal(false);
     },
   });
@@ -55,7 +55,7 @@ const Schedule = () => {
     mutationFn: deleteSchedule,
     onSuccess: () => {
       queryClient.invalidateQueries(['schedules']);
-      cogoToast.warn('Занятие удалено');
+      toast.warn('Занятие удалено');
       setShowModal(false);
     },
   });

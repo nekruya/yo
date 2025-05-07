@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useHistory, Link } from 'react-router-dom';
-import cogoToast from 'cogo-toast';
+import { toast } from 'react-toastify';
 import { login } from '../services/auth';
 import InputField from '../components/common/InputField';
 import './Profile.css';
@@ -14,10 +14,10 @@ const Login = () => {
     e.preventDefault();
     try {
       await login(email, password);
-      cogoToast.success('Успешный вход');
+      toast.success('Успешный вход');
       history.push('/dashboard');
     } catch (error) {
-      cogoToast.error(error.message);
+      toast.error(error.message);
     }
   };
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useHistory, Link } from 'react-router-dom';
-import cogoToast from 'cogo-toast';
+import { toast } from 'react-toastify';
 import { register, login } from '../services/auth';
 import InputField from '../components/common/InputField';
 import './Profile.css';
@@ -20,13 +20,13 @@ const Register = () => {
       await register(name, email, password, role);
       // автоматически войти, чтобы получить jwt
       await login(email, password);
-      cogoToast.success('Регистрация и вход выполнены успешно');
+      toast.success('Регистрация и вход выполнены успешно');
       history.push('/dashboard');
     } catch (error) {
       // отобразить сообщение от сервера или общую ошибку
       const serverMessage = error.response?.data?.detail || JSON.stringify(error.response?.data) || error.message;
       console.error('Registration error:', error.response?.data || error);
-      cogoToast.error(serverMessage);
+      toast.error(serverMessage);
     }
   };
 
