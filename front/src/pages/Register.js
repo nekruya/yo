@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import { useHistory, Link } from 'react-router-dom';
 import cogoToast from 'cogo-toast';
 import { register, login } from '../services/auth';
-import './Welcome.css';
+import InputField from '../components/common/InputField';
+import './Profile.css';
+import '../styles.css';
 
 const Register = () => {
   const history = useHistory();
@@ -29,47 +31,45 @@ const Register = () => {
   };
 
   return (
-    <div className="welcome-container">
-      <h1>Регистрация</h1>
-      <form onSubmit={handleSubmit} className="welcome-form">
-        <div className="form-group">
-          <label>Имя:</label>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label>Email:</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label>Пароль:</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label>Роль:</label>
-          <select value={role} onChange={e => setRole(e.target.value)}>
+    <div className="profile-container">
+      <h1 className="profile-title">Регистрация</h1>
+      <form onSubmit={handleSubmit} className="profile-form">
+        <InputField
+          label="Имя"
+          name="name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+        <InputField
+          label="Email"
+          name="email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <InputField
+          label="Пароль"
+          name="password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <div className="input-field">
+          <label htmlFor="role">Роль</label>
+          <select
+            id="role"
+            name="role"
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+          >
             <option value="student">Студент</option>
             <option value="teacher">Преподаватель</option>
             <option value="admin">Администратор</option>
           </select>
         </div>
-        <button type="submit">Зарегистрироваться</button>
+        <button type="submit" className="btn btn-primary">Зарегистрироваться</button>
       </form>
-      <p>
+      <p className="register-link">
         Уже есть аккаунт? <Link to="/login">Войти</Link>
       </p>
     </div>

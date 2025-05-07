@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from typing import List
 from database import SessionLocal, init_db, get_db
 from sqlalchemy.orm import Session
-from crud import create_role, get_roles, create_user, get_users  # import CRUD functions
+from crud import create_role, get_roles, create_user, get_users, get_role_by_name  # import CRUD functions
 from schemas import RoleCreate, Role, UserCreate, User, Token  # import Pydantic schemas
 from fastapi.security import OAuth2PasswordRequestForm
 from auth import authenticate_user, create_access_token
@@ -139,6 +139,14 @@ async def favicon():
 @app.on_event("startup")
 async def on_startup():
     init_db()
+    # Seed default roles if they do not exist
+    db = SessionLocal()
+    try:
+        for name, desc in [("student", "Student role"), ("teacher", "Teacher role"), ("admin", "Administrator role")]:
+            if not get_role_by_name(db, name):
+                create_role(db, RoleCreate(name=name, description=desc))
+    finally:
+        db.close()
 
 @app.post("/token", response_model=Token)
 async def login_for_access_token(
