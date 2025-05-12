@@ -208,4 +208,98 @@ class CourseFile(Base):
 
 This documentation provides a comprehensive guide for understanding, running, and presenting the Students Assistant project. It covers all major components, architecture, and usage scenarios for different user roles.
 
-Данная документация содержит полное описание архитектуры, установки, работы и возможностей проекта Students Assistant, а также сценарии использования для разных ролей пользователей. 
+Данная документация содержит полное описание архитектуры, установки, работы и возможностей проекта Students Assistant, а также сценарии использования для разных ролей пользователей.
+
+---
+
+## 12. Containerization / Контейнеризация
+
+To simplify deployment, both backend and frontend can be containerized using Docker and orchestrated with docker-compose.
+
+### Backend Dockerfile
+Located at `backend/Dockerfile`:
+```dockerfile
+FROM python:3.9-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY . .
+EXPOSE 3001
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "3001"]
+```
+
+### Frontend Dockerfile
+Located at `front/Dockerfile`, multi-stage build with nginx:
+```dockerfile
+# Build stage
+FROM node:16-alpine AS build
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+
+# Serve stage
+FROM nginx:alpine
+COPY --from=build /app/build /usr/share/nginx/html
+# nginx config serves index.html for SPA
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+```
+
+### Nginx Configuration
+Located at `front/nginx.conf`:
+```nginx
+server {
+  listen 80;
+  server_name localhost;
+  location / {
+    root /usr/share/nginx/html;
+    index index.html;
+    try_files $uri $uri/ /index.html;
+  }
+}
+```
+
+### Docker Compose
+Create `docker-compose.yml` in project root:
+```yaml
+version: '3.8'
+services:
+  backend:
+    build:
+      context: ./backend
+    container_name: students-backend
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./backend:/app
+      - ./backend/users.db:/app/users.db
+    environment:
+      - DATABASE_URL=sqlite:///./users.db
+
+  frontend:
+    build:
+      context: ./front
+    container_name: students-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+```
+
+### Running with Docker Compose
+In the project root, run:
+```bash
+docker-compose up --build
+```
+
+- Backend will be available at `http://localhost:3001`
+- Frontend (served by nginx) at `http://localhost:3000`
+
+Для запуска контейнеров выполнить в корне проекта:
+```bash
+docker-compose up --build
+```
+Контейнер с бекендом будет доступен по `http://localhost:3001`, а фронтенд по `http://localhost:3000`. 

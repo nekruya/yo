@@ -81,3 +81,31 @@
   display: flex;
   gap: 0.5rem;
 }
+
+/* Dashboard widgets */
+.dashboard-widgets {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.widget-card {
+  background-color: white;
+  border-radius: var(--border-radius);
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+  padding: 1rem 2rem;
+  text-align: center;
+}
+
+.widget-card h3 {
+  margin: 0 0 0.5rem;
+  color: var(--primary-color);
+  font-family: 'Montserrat', sans-serif;
+}
+
+.widget-card p {
+  margin: 0.25rem 0;
+  font-family: 'Roboto', sans-serif;
+  color: var(--text-color);
+}

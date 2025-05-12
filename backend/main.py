@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from typing import List
 from database import SessionLocal, init_db, get_db
 from sqlalchemy.orm import Session
-from crud import create_role, get_roles, create_user, get_users, get_user, update_user, delete_user, get_role_by_name, get_courses, get_course, create_course as create_course_db, get_course_files, create_course_file, update_course, delete_course as delete_course_db, get_user_activities  # импортировать функции crud
+from crud import create_role, get_roles, create_user, get_users, get_user, update_user, delete_user, get_role_by_name, get_courses, get_course, create_course as create_course_db, get_course_files, create_course_file, update_course, delete_course as delete_course_db, get_user_activities, get_summary_metrics  # импортировать функции crud
 from schemas import RoleCreate, Role, UserCreate, User, UserUpdate, UserActivity, Token, CourseCreate, Course as CourseSchema, CourseFile as CourseFileSchema  # импортировать схемы pydantic
 from fastapi.security import OAuth2PasswordRequestForm
 from auth import authenticate_user, create_access_token
@@ -224,6 +224,10 @@ def api_update_course(course_id: int, course: CourseCreate, db: Session = Depend
 def api_delete_course(course_id: int, db: Session = Depends(get_db)):
     delete_course_db(db, course_id)
     return {"ok": True}
+
+@app.get("/api/metrics/summary")
+def api_get_metrics(db: Session = Depends(get_db)):
+    return get_summary_metrics(db)
 
 def get_db():
     db = SessionLocal()

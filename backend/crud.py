@@ -1,10 +1,12 @@
 from sqlalchemy.orm import Session
-from models import User, Role, UserActivity, Course, CourseFile
+from models import User, Role, UserActivity, Course, CourseFile, user_roles
 from schemas import UserCreate, UserUpdate, RoleCreate, CourseCreate
 from passlib.context import CryptContext
 import datetime
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException
+from sqlalchemy import func
+from typing import List
 
 # хеширование паролей
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -152,4 +154,23 @@ def delete_course(db: Session, course_id: int):
     return {"ok": True}
 
 def get_user_activities(db: Session, user_id: int):
-    return db.query(UserActivity).filter(UserActivity.user_id == user_id).all() 
+    return db.query(UserActivity).filter(UserActivity.user_id == user_id).all()
+
+def get_summary_metrics(db: Session):
+    # total users
+    total_users = db.query(func.count(User.id)).scalar()
+    # students count
+    num_students = db.query(func.count(User.id)).join(user_roles).join(Role).filter(Role.name == 'student').scalar()
+    # teachers count
+    num_teachers = db.query(func.count(User.id)).join(user_roles).join(Role).filter(Role.name == 'teacher').scalar()
+    # total courses
+    total_courses = db.query(func.count(Course.id)).scalar()
+    # total files
+    total_files = db.query(func.count(CourseFile.id)).scalar()
+    return {
+        'total_users': total_users,
+        'num_students': num_students,
+        'num_teachers': num_teachers,
+        'total_courses': total_courses,
+        'total_files': total_files,
+    } 
