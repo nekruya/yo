@@ -4,12 +4,14 @@ from pydantic import BaseModel
 from typing import List
 from database import SessionLocal, init_db, get_db
 from sqlalchemy.orm import Session
-from crud import create_role, get_roles, create_user, get_users, get_role_by_name  # импортировать функции crud
-from schemas import RoleCreate, Role, UserCreate, User, Token  # импортировать схемы pydantic
+from crud import create_role, get_roles, create_user, get_users, get_role_by_name, get_courses, get_course, create_course as create_course_db, get_course_files, create_course_file, update_course, delete_course as delete_course_db  # импортировать функции crud
+from schemas import RoleCreate, Role, UserCreate, User, Token, CourseCreate, Course as CourseSchema, CourseFile as CourseFileSchema  # импортировать схемы pydantic
 from fastapi.security import OAuth2PasswordRequestForm
 from auth import authenticate_user, create_access_token
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
+from fastapi import UploadFile, File
+import os
 
 app = FastAPI()
 
@@ -26,11 +28,6 @@ app.add_middleware(
 )
 
 # модели данных
-class Course(BaseModel):
-    id: int
-    title: str
-    description: str
-
 class Student(BaseModel):
     id: int
     name: str
@@ -51,20 +48,9 @@ class Schedule(BaseModel):
     group_name: str
 
 # хранилище в памяти
-courses: List[Course] = []
 students: List[Student] = []
 teachers: List[Teacher] = []
 schedules: List[Schedule] = []
-
-# курсы
-@app.get("/api/courses", response_model=List[Course])
-def list_courses():
-    return courses
-
-@app.post("/api/courses", response_model=Course)
-def create_course(course: Course):
-    courses.append(course)
-    return course
 
 # студенты
 @app.get("/api/students", response_model=List[Student])
@@ -162,6 +148,53 @@ async def login_for_access_token(
         )
     access_token = create_access_token(data={"sub": user.username})
     return {"access_token": access_token, "token_type": "bearer"}
+
+# endpoints для курсов
+@app.get("/api/courses", response_model=List[CourseSchema])
+def api_list_courses(db: Session = Depends(get_db)):
+    return get_courses(db)
+
+@app.post("/api/courses", response_model=CourseSchema)
+def api_create_course(course: CourseCreate, db: Session = Depends(get_db)):
+    return create_course_db(db, course)
+
+# endpoints для файлов курсов
+@app.post("/api/courses/{course_id}/files", response_model=CourseFileSchema)
+async def api_upload_course_file(course_id: int, file: UploadFile = File(...), db: Session = Depends(get_db)):
+    course = get_course(db, course_id)
+    if not course:
+        raise HTTPException(status_code=404, detail="Course not found")
+    upload_dir = os.path.join("static", "courses", str(course_id))
+    os.makedirs(upload_dir, exist_ok=True)
+    file_path = os.path.join(upload_dir, file.filename)
+    with open(file_path, "wb") as f:
+        f.write(await file.read())
+    db_file = create_course_file(db, course_id, file.filename, file_path)
+    return CourseFileSchema(id=db_file.id, filename=db_file.filename, url=f"/static/courses/{course_id}/{db_file.filename}")
+
+@app.get("/api/courses/{course_id}/files", response_model=List[CourseFileSchema])
+def api_get_course_files(course_id: int, db: Session = Depends(get_db)):
+    course = get_course(db, course_id)
+    if not course:
+        raise HTTPException(status_code=404, detail="Course not found")
+    files = get_course_files(db, course_id)
+    return [CourseFileSchema(id=f.id, filename=f.filename, url=f"/static/courses/{course_id}/{f.filename}") for f in files]
+
+@app.get("/api/courses/{course_id}", response_model=CourseSchema)
+def api_get_course(course_id: int, db: Session = Depends(get_db)):
+    course = get_course(db, course_id)
+    if not course:
+        raise HTTPException(status_code=404, detail="Course not found")
+    return course
+
+@app.put("/api/courses/{course_id}", response_model=CourseSchema)
+def api_update_course(course_id: int, course: CourseCreate, db: Session = Depends(get_db)):
+    return update_course(db, course_id, course)
+
+@app.delete("/api/courses/{course_id}")
+def api_delete_course(course_id: int, db: Session = Depends(get_db)):
+    delete_course_db(db, course_id)
+    return {"ok": True}
 
 def get_db():
     db = SessionLocal()

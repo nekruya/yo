@@ -1,44 +1,59 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { fetchCourses } from '../services/courses';
+import { fetchCourses, deleteCourse, updateCourse } from '../services/courses';
 import './Courses.css';
 import '../styles.css'; 
 
 const Courses = () => {
   const history = useHistory();
-  const { data, isLoading, error } = useQuery({ queryKey: ['courses'], queryFn: fetchCourses });
+  const { data, isLoading, error, refetch } = useQuery({ queryKey: ['courses'], queryFn: fetchCourses });
 
-  const handleAddCourse = () => {
-    history.push('/add-course');
+  const handleAddCourse = () => history.push('/add-course');
+
+  const handleDeleteCourse = async (id) => {
+    try {
+      await deleteCourse(id);
+      refetch();
+    } catch (err) {
+      console.error('Ошибка удаления курса', err);
+    }
   };
 
-  const handleEditCourse = () => {
-    console.log('Edit Course');
+  const handleEditCourse = async (id, currentTitle, currentDescription) => {
+    const newTitle = window.prompt('Введите новое название курса', currentTitle);
+    if (newTitle === null) return;
+    const newDescription = window.prompt('Введите новое описание курса', currentDescription || '');
+    if (newDescription === null) return;
+    try {
+      await updateCourse({ id, title: newTitle, description: newDescription });
+      refetch();
+    } catch (err) {
+      console.error('Ошибка обновления курса', err);
+    }
   };
 
-  const handleDeleteCourse = () => {
-    console.log('Delete Course');
-  };
-
-  if (isLoading) return <div>Loading courses...</div>;
-  if (error) return <div>Error loading courses: {error.message}</div>;
+  if (isLoading) return <div>Загрузка курсов...</div>;
+  if (error) return <div>Ошибка загрузки курсов: {error.message}</div>;
 
   const coursesList = data?.data || [];
 
   return (
     <div className="courses-page">
-      <h1>Courses</h1>
-      <div className="course-controls">
-        <button className="btn btn-primary" onClick={handleAddCourse}>Add Course</button>
-        <button className="btn btn-secondary" onClick={handleEditCourse}>Edit Course</button>
-        <button className="btn btn-danger" onClick={handleDeleteCourse}>Delete Course</button>
-      </div>
-      <ul className="course-list">
+      <h1>Курсы</h1>
+      <button className="btn btn-primary" onClick={handleAddCourse}>Добавить курс</button>
+      <div className="course-list">
         {coursesList.map(course => (
-          <li key={course.id}>{course.title}</li>
+          <div key={course.id} className="course-card">
+            <h2>{course.title}</h2>
+            <p>{course.description}</p>
+            <div className="course-action-buttons">
+              <button className="btn btn-secondary" onClick={() => handleEditCourse(course.id, course.title, course.description)}>Редактировать</button>
+              <button className="btn btn-danger" onClick={() => handleDeleteCourse(course.id)}>Удалить</button>
+            </div>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 };

@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from models import User, Role, UserActivity
-from schemas import UserCreate, UserUpdate, RoleCreate
+from models import User, Role, UserActivity, Course, CourseFile
+from schemas import UserCreate, UserUpdate, RoleCreate, CourseCreate
 from passlib.context import CryptContext
 import datetime
 from sqlalchemy.exc import IntegrityError
@@ -106,4 +106,47 @@ def create_user_activity(db: Session, user_id: int, event_type: str, details: st
     db.add(activity)
     db.commit()
     db.refresh(activity)
-    return activity 
+    return activity
+
+def get_courses(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(Course).offset(skip).limit(limit).all()
+
+def get_course(db: Session, course_id: int):
+    return db.query(Course).filter(Course.id == course_id).first()
+
+def create_course(db: Session, course: CourseCreate):
+    db_course = Course(title=course.title, description=course.description)
+    db.add(db_course)
+    db.commit()
+    db.refresh(db_course)
+    return db_course
+
+def get_course_files(db: Session, course_id: int):
+    return db.query(CourseFile).filter(CourseFile.course_id == course_id).all()
+
+def create_course_file(db: Session, course_id: int, filename: str, filepath: str):
+    db_file = CourseFile(course_id=course_id, filename=filename, filepath=filepath)
+    db.add(db_file)
+    db.commit()
+    db.refresh(db_file)
+    return db_file
+
+def update_course(db: Session, course_id: int, course: CourseCreate):
+    """Update title and description of existing course"""
+    db_course = get_course(db, course_id)
+    if not db_course:
+        raise HTTPException(status_code=404, detail="Course not found")
+    db_course.title = course.title
+    db_course.description = course.description
+    db.commit()
+    db.refresh(db_course)
+    return db_course
+
+def delete_course(db: Session, course_id: int):
+    """Delete an existing course"""
+    db_course = get_course(db, course_id)
+    if not db_course:
+        raise HTTPException(status_code=404, detail="Course not found")
+    db.delete(db_course)
+    db.commit()
+    return {"ok": True} 

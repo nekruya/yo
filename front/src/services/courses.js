@@ -10,4 +10,16 @@ export const createCourse = (course) => api.post('/courses', course);
 export const deleteCourse = (id) => api.delete(`/courses/${id}`);
 
 // обновить курс (опционально, если поддерживает бэкенд)
-export const updateCourse = (course) => api.put(`/courses/${course.id}`, course); 
+export const updateCourse = (course) => api.put(`/courses/${course.id}`, course);
+
+// загрузить файл в курс
+export const uploadCourseFile = (courseId, file) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  return api.post(`/courses/${courseId}/files`, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
+};
+
+// получить файлы курса
+export const fetchCourseFiles = (courseId) => api.get(`/courses/${courseId}/files`); 

@@ -44,4 +44,31 @@ class UserActivity(Base):
     timestamp = Column(DateTime, default=datetime.datetime.utcnow)
     details = Column(Text, nullable=True)
 
-    user = relationship('User', back_populates='activities') 
+    user = relationship('User', back_populates='activities')
+
+# добавить модели для курсов и прикрепленных файлов
+database_imports_restored = True  # placeholder to preserve context
+class Course(Base):
+    __tablename__ = 'courses'
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String, nullable=False)
+    description = Column(Text, nullable=True)
+
+    files = relationship('CourseFile', back_populates='course', cascade='all, delete-orphan')
+
+class CourseFile(Base):
+    __tablename__ = 'course_files'
+
+    id = Column(Integer, primary_key=True, index=True)
+    course_id = Column(Integer, ForeignKey('courses.id'), nullable=False)
+    filename = Column(String, nullable=False)
+    filepath = Column(String, nullable=False)
+    upload_time = Column(DateTime, default=datetime.datetime.utcnow)
+
+    course = relationship('Course', back_populates='files')
+
+    @property
+    def url(self) -> str:
+        # compute public URL for the file
+        return f"/static/courses/{self.course_id}/{self.filename}" 

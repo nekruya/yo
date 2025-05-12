@@ -53,4 +53,26 @@ class Token(BaseModel):
     token_type: str
 
 class TokenData(BaseModel):
-    username: Optional[str] = None 
+    username: Optional[str] = None
+
+class CourseBase(BaseModel):
+    title: str
+    description: Optional[str] = None
+
+class CourseCreate(CourseBase):
+    pass
+
+class CourseFile(BaseModel):
+    id: int
+    filename: str
+    url: str
+
+    class Config:
+        orm_mode = True
+
+class Course(CourseBase):
+    id: int
+    files: List[CourseFile] = []
+
+    class Config:
+        orm_mode = True 

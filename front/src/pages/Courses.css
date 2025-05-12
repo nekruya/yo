@@ -1,6 +1,9 @@
 .courses-page {
   padding: 2rem;
   background-color: var(--background-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .courses-page h1 {
@@ -51,4 +54,39 @@
   color: #fff;
   background-color: #d32f2f; 
   border-color: #d32f2f; 
+}
+
+/* список карточек */
+.course-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* кнопки действий внутри карточки */
+.course-action-buttons {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* карточка курса */
+.course-card {
+  background-color: white;
+  border-radius: var(--border-radius);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  margin: 1rem 0;
+  width: 300px;
+}
+
+.course-card h2 {
+  font-family: 'Montserrat', sans-serif;
+  color: var(--primary-color);
+  margin-top: 0;
+}
+
+.course-card p {
+  font-family: 'Roboto', sans-serif;
+  color: #757575;
 }
