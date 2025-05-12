@@ -149,4 +149,7 @@ def delete_course(db: Session, course_id: int):
         raise HTTPException(status_code=404, detail="Course not found")
     db.delete(db_course)
     db.commit()
-    return {"ok": True} 
+    return {"ok": True}
+
+def get_user_activities(db: Session, user_id: int):
+    return db.query(UserActivity).filter(UserActivity.user_id == user_id).all() 

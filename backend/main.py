@@ -4,8 +4,8 @@ from pydantic import BaseModel
 from typing import List
 from database import SessionLocal, init_db, get_db
 from sqlalchemy.orm import Session
-from crud import create_role, get_roles, create_user, get_users, get_role_by_name, get_courses, get_course, create_course as create_course_db, get_course_files, create_course_file, update_course, delete_course as delete_course_db  # импортировать функции crud
-from schemas import RoleCreate, Role, UserCreate, User, Token, CourseCreate, Course as CourseSchema, CourseFile as CourseFileSchema  # импортировать схемы pydantic
+from crud import create_role, get_roles, create_user, get_users, get_user, update_user, delete_user, get_role_by_name, get_courses, get_course, create_course as create_course_db, get_course_files, create_course_file, update_course, delete_course as delete_course_db, get_user_activities  # импортировать функции crud
+from schemas import RoleCreate, Role, UserCreate, User, UserUpdate, UserActivity, Token, CourseCreate, Course as CourseSchema, CourseFile as CourseFileSchema  # импортировать схемы pydantic
 from fastapi.security import OAuth2PasswordRequestForm
 from auth import authenticate_user, create_access_token
 from fastapi.staticfiles import StaticFiles
@@ -113,6 +113,35 @@ def api_create_user(user: UserCreate, db: Session = Depends(get_db)):
 @app.get("/api/users", response_model=List[User])
 def api_list_users(db: Session = Depends(get_db)):
     return get_users(db)
+
+@app.get("/api/users/{user_id}", response_model=User)
+def api_get_user(user_id: int, db: Session = Depends(get_db)):
+    user = get_user(db, user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user
+
+@app.put("/api/users/{user_id}", response_model=User)
+def api_update_user(user_id: int, user_update: UserUpdate, db: Session = Depends(get_db)):
+    db_user = get_user(db, user_id)
+    if not db_user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return update_user(db, db_user, user_update)
+
+@app.delete("/api/users/{user_id}")
+def api_delete_user(user_id: int, db: Session = Depends(get_db)):
+    db_user = get_user(db, user_id)
+    if not db_user:
+        raise HTTPException(status_code=404, detail="User not found")
+    delete_user(db, db_user)
+    return {"ok": True}
+
+@app.get("/api/users/{user_id}/activities", response_model=List[UserActivity])
+def api_get_user_activities(user_id: int, db: Session = Depends(get_db)):
+    db_user = get_user(db, user_id)
+    if not db_user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return get_user_activities(db, user_id)
 
 # монтировать директорию 'static' для обслуживания файлов
 app.mount("/static", StaticFiles(directory="static"), name="static")

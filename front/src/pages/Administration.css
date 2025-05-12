@@ -45,3 +45,39 @@
   background-color: #155a8a; 
   border-color: #155a8a; 
 }
+
+/* Секция управления пользователями */
+.users-management {
+  margin-top: 2rem;
+  width: 100%;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.user-list {
+  list-style: none;
+  padding: 0;
+}
+
+.user-card {
+  background-color: white;
+  border-radius: var(--border-radius);
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+  padding: 1rem;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.user-info {
+  flex: 1;
+  font-family: 'Roboto', sans-serif;
+  color: var(--text-color);
+}
+
+.user-actions {
+  display: flex;
+  gap: 0.5rem;
+}
