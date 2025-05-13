@@ -9,6 +9,7 @@ import Courses from './pages/Courses';
 import Profile from './pages/Profile';
 import Welcome from './pages/Welcome';
 import AddCourse from './pages/Addcourse';
+import EditCourse from './pages/EditCourse';
 import Teachers from './pages/Teachers';
 import Students from './pages/Students';
 import Administration from './pages/Administration';
@@ -38,7 +39,8 @@ function App() {
                   <Route path="/login" component={Login} />
                   <Route path="/register" component={Register} />
                   <ProtectedRoute path="/dashboard" component={Dashboard} />
-                  <ProtectedRoute path="/courses" component={Courses} />
+                  <ProtectedRoute path="/courses/:courseId/edit" component={EditCourse} />
+                  <ProtectedRoute path="/courses" exact component={Courses} />
                   <ProtectedRoute path="/profile" component={Profile} />
                   <ProtectedRoute path="/add-course" component={AddCourse} />
                   <ProtectedRoute path="/teachers" component={Teachers} />

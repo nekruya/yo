@@ -22,4 +22,10 @@ export const uploadCourseFile = (courseId, file) => {
 };
 
 // получить файлы курса
-export const fetchCourseFiles = (courseId) => api.get(`/courses/${courseId}/files`); 
+export const fetchCourseFiles = (courseId) => api.get(`/courses/${courseId}/files`);
+
+// fetch a single course by id
+export const fetchCourse = (courseId) => api.get(`/courses/${courseId}`);
+
+// delete a file attached to a course
+export const deleteCourseFile = (courseId, fileId) => api.delete(`/courses/${courseId}/files/${fileId}`); 

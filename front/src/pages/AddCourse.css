@@ -33,3 +33,24 @@
   color: #fff;
   background-color: #1976D2;
 }
+
+.file-dropzone {
+  border: 2px dashed #ccc;
+  border-radius: 4px;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  color: #666;
+  min-height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.file-dropzone p {
+  margin: 0;
+}
+
+/* utility spacing class */
+.ml-2 {
+  margin-left: 0.5rem;
+}

@@ -11,6 +11,7 @@ from auth import authenticate_user, create_access_token
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from fastapi import UploadFile, File
+from fastapi import Request
 import os
 
 app = FastAPI()
@@ -189,7 +190,7 @@ def api_create_course(course: CourseCreate, db: Session = Depends(get_db)):
 
 # endpoints для файлов курсов
 @app.post("/api/courses/{course_id}/files", response_model=CourseFileSchema)
-async def api_upload_course_file(course_id: int, file: UploadFile = File(...), db: Session = Depends(get_db)):
+async def api_upload_course_file(request: Request, course_id: int, file: UploadFile = File(...), db: Session = Depends(get_db)):
     course = get_course(db, course_id)
     if not course:
         raise HTTPException(status_code=404, detail="Course not found")
@@ -199,15 +200,40 @@ async def api_upload_course_file(course_id: int, file: UploadFile = File(...), d
     with open(file_path, "wb") as f:
         f.write(await file.read())
     db_file = create_course_file(db, course_id, file.filename, file_path)
-    return CourseFileSchema(id=db_file.id, filename=db_file.filename, url=f"/static/courses/{course_id}/{db_file.filename}")
+    # return absolute URL for frontend to download
+    url = str(request.base_url).rstrip("/") + f"/static/courses/{course_id}/{db_file.filename}"
+    return CourseFileSchema(id=db_file.id, filename=db_file.filename, url=url)
 
 @app.get("/api/courses/{course_id}/files", response_model=List[CourseFileSchema])
-def api_get_course_files(course_id: int, db: Session = Depends(get_db)):
+def api_get_course_files(request: Request, course_id: int, db: Session = Depends(get_db)):
     course = get_course(db, course_id)
     if not course:
         raise HTTPException(status_code=404, detail="Course not found")
     files = get_course_files(db, course_id)
-    return [CourseFileSchema(id=f.id, filename=f.filename, url=f"/static/courses/{course_id}/{f.filename}") for f in files]
+    base_url = str(request.base_url).rstrip("/")
+    # return list with absolute URLs for each file
+    return [CourseFileSchema(id=f.id, filename=f.filename, url=f"{base_url}/static/courses/{course_id}/{f.filename}") for f in files]
+
+@app.delete("/api/courses/{course_id}/files/{file_id}")
+def api_delete_course_file(course_id: int, file_id: int, db: Session = Depends(get_db)):
+    # ensure course exists
+    course = get_course(db, course_id)
+    if not course:
+        raise HTTPException(status_code=404, detail="Course not found")
+    # find the file record
+    files = get_course_files(db, course_id)
+    db_file = next((f for f in files if f.id == file_id), None)
+    if not db_file:
+        raise HTTPException(status_code=404, detail="File not found")
+    # remove file from disk
+    try:
+        os.remove(db_file.filepath)
+    except OSError:
+        pass
+    # delete record
+    db.delete(db_file)
+    db.commit()
+    return {"ok": True}
 
 @app.get("/api/courses/{course_id}", response_model=CourseSchema)
 def api_get_course(course_id: int, db: Session = Depends(get_db)):

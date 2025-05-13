@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import { createCourse, uploadCourseFile } from '../services/courses';
 import './AddCourse.css';
@@ -8,6 +8,7 @@ const AddCourse = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [files, setFiles] = useState([]);
+  const fileInputRef = useRef(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,6 +22,17 @@ const AddCourse = () => {
     } catch (error) {
       console.error('Error creating course', error);
     }
+  };
+
+  const handleFilesChange = (e) => {
+    const selectedFiles = Array.from(e.target.files);
+    setFiles(prev => [...prev, ...selectedFiles]);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    const droppedFiles = Array.from(e.dataTransfer.files);
+    setFiles(prev => [...prev, ...droppedFiles]);
   };
 
   return (
@@ -47,10 +59,24 @@ const AddCourse = () => {
         </div>
         <div className="form-group">
           <label>Файлы</label>
+          <div
+            className="file-dropzone"
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={handleDrop}
+            onClick={() => fileInputRef.current && fileInputRef.current.click()}
+          >
+            {files.length > 0 ? (
+              files.map((file, idx) => <p key={idx}>{file.name}</p>)
+            ) : (
+              <p>Перетащите файлы сюда или нажмите для выбора</p>
+            )}
+          </div>
           <input
             type="file"
             multiple
-            onChange={(e) => setFiles(Array.from(e.target.files))}
+            ref={fileInputRef}
+            style={{ display: 'none' }}
+            onChange={handleFilesChange}
           />
         </div>
         <button type="submit" className="btn btn-primary">Создать курс</button>
