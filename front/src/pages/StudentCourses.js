@@ -39,9 +39,11 @@ const StudentCourses = () => {
   return (
     <div className="student-courses-page">
       <h1>Курсы</h1>
-      {coursesList.map(course => (
-        <CourseCard key={course.id} course={course} />
-      ))}
+      <div className="courses-grid">
+        {coursesList.map(course => (
+          <CourseCard key={course.id} course={course} />
+        ))}
+      </div>
     </div>
   );
 };

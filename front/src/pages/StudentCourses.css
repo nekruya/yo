@@ -1,9 +1,6 @@
 .student-courses-page {
   padding: 2rem;
   background-color: var(--background-color);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 }
 
 .student-courses-page h1 {
@@ -45,4 +42,12 @@
 
 .course-card ul li {
   margin-bottom: 0.5rem;
+}
+
+/* Grid layout for courses */
+.courses-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  justify-items: center;
 }
