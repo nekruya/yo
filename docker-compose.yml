@@ -9,7 +9,6 @@ services:
       - "3001:3001"
     volumes:
       - ./backend:/app
-      - ./backend/users.db:/app/users.db
     environment:
       - DATABASE_URL=sqlite:///./users.db
 
